@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For My Wonderful Aunt</title>
+    <style>
+        :root {
+            --primary-color: #f2f2f2; /* Light gray background */
+            --accent-color: #a7d9ed; /* Soft blue accent */
+            --photo-border: #fff; /* White border for the photo */
+            --text-color: #333; /* Dark gray text */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--primary-color);
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            color: var(--text-color);
+        }
+
+        .container {
+            text-align: center;
+            padding: 20px;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .photo-container {
+            margin: 30px auto;
+            border: 10px solid var(--photo-border);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 100%;
+            border-radius: 8px; /* Slightly rounded corners for the photo container */
+            overflow: hidden;
+        }
+
+        .photo-container img {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            color: var(--accent-color);
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        p {
+            font-size: 1.2em;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        /* Responsive design adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 2.5em;
+            }
+
+            p {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>To My Amazing Aunt</h1>
+        <p>Some words you might want to include about your aunt</p>
+        <div class="photo-container">
+            <img src="aunt.png" alt="A photo of my aunt">
+        </div>
+
+    </div>
+</body>
+</html>
