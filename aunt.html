@@ -4,13 +4,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>For My Wonderful Aunt</title>
+    <title>Merry Christmas!!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Dancing+Script:wght@700&family=Mountains+of+Christmas:wght@700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #f2f2f2;
-            --accent-color: #a7d9ed;
+            --primary-color: #f8e7e7;
+            --accent-color: #d9534f;
             --photo-border: #fff;
             --text-color: #333;
+            --shadow-color: rgba(0, 0, 0, 0.2);
+            --sparkle-color: #fff;
         }
 
         * {
@@ -20,15 +23,16 @@
         }
 
         body {
-            background-color: var(--primary-color);
-            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, var(--primary-color), #f5d9d9);
+            font-family: 'Montserrat', sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
             color: var(--text-color);
-            overflow: hidden;
+            overflow-x: hidden;
+            padding: 20px;
         }
 
         .welcome-screen {
@@ -37,36 +41,43 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: var(--accent-color);
+            background: linear-gradient(45deg, var(--accent-color), #f78181);
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 1000;
-            animation: fadeOut 1s ease-in-out 3s forwards;
+            animation: fadeOut 1.5s ease-in-out 3s forwards;
         }
 
         .welcome-text {
-            font-size: 2.5em;
+            font-family: 'Mountains of Christmas', cursive;
+            font-size: 3.5em;
             color: white;
             text-align: center;
+            text-shadow: 3px 3px 5px var(--shadow-color);
             animation: welcomeAnimation 2s ease-in-out;
+            padding: 20px;
         }
 
         .container {
             text-align: center;
-            padding: 20px;
+            padding: 40px;
             max-width: 800px;
             width: 100%;
             opacity: 0;
             animation: revealContent 1s ease-in-out 3.5s forwards;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            box-shadow: 0 15px 40px var(--shadow-color);
         }
 
         .photo-container {
-            margin: 30px auto;
-            border: 10px solid var(--photo-border);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            max-width: 100%;
-            border-radius: 8px;
+            margin: 40px auto;
+            border: 15px solid var(--photo-border);
+            box-shadow: 0 10px 25px var(--shadow-color);
+            max-width: 550px;
+            width: 90%;
+            border-radius: 20px;
             overflow: hidden;
             transform: scale(0);
             animation: scaleIn 1s ease-in-out 4s forwards;
@@ -76,41 +87,48 @@
             display: block;
             width: 100%;
             height: auto;
+            transition: transform 0.4s ease;
+        }
+
+        .photo-container:hover img {
+            transform: scale(1.03);
         }
 
         h1 {
-            font-size: 3em;
-            margin-bottom: 10px;
+            font-family: 'Mountains of Christmas', cursive;
+            font-size: 5em;
+            margin-bottom: 25px;
             color: var(--accent-color);
-            font-weight: 600;
-            letter-spacing: -0.5px;
+            font-weight: 700;
+            text-shadow: 3px 3px 5px var(--shadow-color);
             transform: translateY(30px);
             opacity: 0;
             animation: slideUp 1s ease-in-out 4.5s forwards;
         }
 
         p {
-            font-size: 1.2em;
-            line-height: 1.6;
-            margin-bottom: 20px;
+            font-size: 1.5em;
+            line-height: 1.7;
+            margin-bottom: 40px;
             transform: translateY(30px);
             opacity: 0;
             animation: slideUp 1s ease-in-out 5s forwards;
         }
 
+        /* Animations */
         @keyframes welcomeAnimation {
             0% {
-                transform: scale(0.5);
+                transform: scale(0.8) rotate(-10deg);
                 opacity: 0;
             }
 
             50% {
-                transform: scale(1.2);
-                opacity: 0.8;
+                transform: scale(1.1) rotate(5deg);
+                opacity: 0.9;
             }
 
             100% {
-                transform: scale(1);
+                transform: scale(1) rotate(0);
                 opacity: 1;
             }
         }
@@ -130,11 +148,11 @@
 
         @keyframes scaleIn {
             from {
-                transform: scale(0);
+                transform: scale(0) rotate(-10deg);
             }
 
             to {
-                transform: scale(1);
+                transform: scale(1) rotate(0);
             }
         }
 
@@ -145,45 +163,72 @@
             }
         }
 
-        /* Sparkle effect */
         .sparkle {
             position: absolute;
-            width: 5px;
-            height: 5px;
-            background-color: white;
+            width: 8px;
+            height: 8px;
+            background: radial-gradient(circle, var(--sparkle-color), rgba(255, 255, 255, 0.4));
             border-radius: 50%;
             pointer-events: none;
-            animation: sparkle 1s linear infinite;
+            animation: sparkleAnimation 2s linear infinite;
+            mix-blend-mode: screen;
         }
 
-        @keyframes sparkle {
+        @keyframes sparkleAnimation {
             0% {
-                transform: scale(0);
+                transform: scale(0) translateY(0) rotate(0deg);
                 opacity: 1;
             }
 
+            50% {
+                transform: scale(1.5) translateY(-20px) rotate(180deg);
+                opacity: 0.5;
+            }
+
             100% {
-                transform: scale(1.5);
+                transform: scale(0) translateY(0) rotate(360deg);
                 opacity: 0;
             }
         }
 
-        /* Responsive design adjustments */
+        /* Responsive Design */
         @media (max-width: 768px) {
             .container {
-                padding: 10px;
+                padding: 30px;
             }
 
             h1 {
-                font-size: 2.5em;
+                font-size: 4em;
             }
 
             p {
-                font-size: 1em;
+                font-size: 1.3em;
             }
 
             .welcome-text {
-                font-size: 2em;
+                font-size: 2.8em;
+            }
+
+            .photo-container {
+                margin: 30px auto;
+                border-width: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 3em;
+            }
+
+            p {
+                font-size: 1.2em;
+            }
+
+            .welcome-text {
+                font-size: 2.2em;
+            }
+
+            .container {
                 padding: 20px;
             }
         }
@@ -199,15 +244,14 @@
     </div>
 
     <div class="container">
-        <h1>To My Amazing Aunt</h1>
-        <p>Some words you might want to include about your aunt</p>
+        <h1>Merry Christmas!</h1>
+        <p>From Bonnie, Spencer, and Jasper</p>
         <div class="photo-container">
-            <img src="aunt.png" alt="A photo of my aunt">
+            <img src="spencer.jpg" alt="Merry Christmas">
         </div>
     </div>
 
     <script>
-        // Add sparkle effect
         function createSparkle() {
             const sparkle = document.createElement('div');
             sparkle.className = 'sparkle';
@@ -217,15 +261,15 @@
 
             setTimeout(() => {
                 sparkle.remove();
-            }, 1000);
+            }, 2000);
         }
 
-        // Create sparkles during the welcome screen
         const sparkleInterval = setInterval(() => {
-            createSparkle();
-        }, 100);
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => createSparkle(), i * 50);
+            }
+        }, 200);
 
-        // Stop creating sparkles after welcome screen fades
         setTimeout(() => {
             clearInterval(sparkleInterval);
         }, 3000);
