@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>For My Wonderful Aunt</title>
     <style>
         :root {
-            --primary-color: #f2f2f2; /* Light gray background */
-            --accent-color: #a7d9ed; /* Soft blue accent */
-            --photo-border: #fff; /* White border for the photo */
-            --text-color: #333; /* Dark gray text */
+            --primary-color: #f2f2f2;
+            --accent-color: #a7d9ed;
+            --photo-border: #fff;
+            --text-color: #333;
         }
 
         * {
@@ -27,6 +28,28 @@
             justify-content: center;
             min-height: 100vh;
             color: var(--text-color);
+            overflow: hidden;
+        }
+
+        .welcome-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--accent-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeOut 1s ease-in-out 3s forwards;
+        }
+
+        .welcome-text {
+            font-size: 2.5em;
+            color: white;
+            text-align: center;
+            animation: welcomeAnimation 2s ease-in-out;
         }
 
         .container {
@@ -34,6 +57,8 @@
             padding: 20px;
             max-width: 800px;
             width: 100%;
+            opacity: 0;
+            animation: revealContent 1s ease-in-out 3.5s forwards;
         }
 
         .photo-container {
@@ -41,8 +66,10 @@
             border: 10px solid var(--photo-border);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             max-width: 100%;
-            border-radius: 8px; /* Slightly rounded corners for the photo container */
+            border-radius: 8px;
             overflow: hidden;
+            transform: scale(0);
+            animation: scaleIn 1s ease-in-out 4s forwards;
         }
 
         .photo-container img {
@@ -57,12 +84,88 @@
             color: var(--accent-color);
             font-weight: 600;
             letter-spacing: -0.5px;
+            transform: translateY(30px);
+            opacity: 0;
+            animation: slideUp 1s ease-in-out 4.5s forwards;
         }
 
         p {
             font-size: 1.2em;
             line-height: 1.6;
             margin-bottom: 20px;
+            transform: translateY(30px);
+            opacity: 0;
+            animation: slideUp 1s ease-in-out 5s forwards;
+        }
+
+        @keyframes welcomeAnimation {
+            0% {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+
+            50% {
+                transform: scale(1.2);
+                opacity: 0.8;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                visibility: hidden;
+            }
+        }
+
+        @keyframes revealContent {
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+            }
+
+            to {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes slideUp {
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Sparkle effect */
+        .sparkle {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background-color: white;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: sparkle 1s linear infinite;
+        }
+
+        @keyframes sparkle {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
         }
 
         /* Responsive design adjustments */
@@ -78,17 +181,55 @@
             p {
                 font-size: 1em;
             }
+
+            .welcome-text {
+                font-size: 2em;
+                padding: 20px;
+            }
         }
     </style>
 </head>
+
 <body>
+    <div class="welcome-screen">
+        <div class="welcome-text">
+            Congratulations!<br>
+            You solved the puzzle! 🎉
+        </div>
+    </div>
+
     <div class="container">
         <h1>To My Amazing Aunt</h1>
         <p>Some words you might want to include about your aunt</p>
         <div class="photo-container">
             <img src="aunt.png" alt="A photo of my aunt">
         </div>
-
     </div>
+
+    <script>
+        // Add sparkle effect
+        function createSparkle() {
+            const sparkle = document.createElement('div');
+            sparkle.className = 'sparkle';
+            sparkle.style.left = Math.random() * window.innerWidth + 'px';
+            sparkle.style.top = Math.random() * window.innerHeight + 'px';
+            document.body.appendChild(sparkle);
+
+            setTimeout(() => {
+                sparkle.remove();
+            }, 1000);
+        }
+
+        // Create sparkles during the welcome screen
+        const sparkleInterval = setInterval(() => {
+            createSparkle();
+        }, 100);
+
+        // Stop creating sparkles after welcome screen fades
+        setTimeout(() => {
+            clearInterval(sparkleInterval);
+        }, 3000);
+    </script>
 </body>
+
 </html>
