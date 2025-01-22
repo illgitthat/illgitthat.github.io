@@ -79,11 +79,6 @@
             animation: sphereFloat 20s ease-in-out infinite;
         }
 
-        @keyframes sphereFloat {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            50% { transform: translate(-100px, -50px) scale(1.1); }
-        }
-
         .grid {
             position: fixed;
             top: 0;
@@ -93,15 +88,20 @@
             background-image:
                 linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
-            background-size: 50px 50px;
+            background-size: 100px 100px;
             perspective: 1000px;
             transform-style: preserve-3d;
             animation: gridMove 15s linear infinite;
         }
 
         @keyframes gridMove {
-            0% { transform: translateZ(0) rotate3d(1, 0, 0, 75deg); }
-            100% { transform: translateZ(100px) rotate3d(1, 0, 0, 75deg); }
+            0% { transform: translate3d(0, 0, 0) rotate3d(1, 0, 0, 75deg); }
+            100% { transform: translate3d(0, 0, 100px) rotate3d(1, 0, 0, 75deg); }
+        }
+
+        @keyframes sphereFloat {
+            0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+            50% { transform: translate3d(-100px, -50px, 0) scale(1.1); }
         }
 
         .cursor {
@@ -134,9 +134,23 @@
     <script>
         // Custom cursor
         const cursor = document.getElementById('cursor');
+        // Debounce mouse move events
+        let mouseTimeout;
         document.addEventListener('mousemove', (e) => {
-            cursor.style.left = e.clientX - 10 + 'px';
-            cursor.style.top = e.clientY - 10 + 'px';
+            if (mouseTimeout) return;
+
+            mouseTimeout = setTimeout(() => {
+                const cursor = document.getElementById('cursor');
+                cursor.style.left = e.clientX - 10 + 'px';
+                cursor.style.top = e.clientY - 10 + 'px';
+
+                const container = document.querySelector('.container');
+                const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
+                const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
+                container.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+
+                mouseTimeout = null;
+            }, 16); // Approximately 60fps
         });
 
         // 3D tilt effect
@@ -147,31 +161,40 @@
             container.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
         });
 
-        // Particle system
+        const MAX_PARTICLES = 20;
+        let particleCount = 0;
+
         function createParticle() {
+            if (particleCount >= MAX_PARTICLES) return;
+
+            particleCount++;
             const particle = document.createElement('div');
-            particle.style.position = 'fixed';
-            particle.style.width = '2px';
-            particle.style.height = '2px';
-            particle.style.background = '#fff';
-            particle.style.borderRadius = '50%';
-            particle.style.left = Math.random() * 100 + 'vw';
-            particle.style.top = Math.random() * 100 + 'vh';
-            particle.style.opacity = Math.random() * 0.5;
-            particle.style.transition = 'all 3s ease';
+            particle.style.cssText = `
+                position: fixed;
+                width: 2px;
+                height: 2px;
+                background: #fff;
+                border-radius: 50%;
+                left: ${Math.random() * 100}vw;
+                top: ${Math.random() * 100}vh;
+                opacity: ${Math.random() * 0.5};
+                transform: translate3d(0, 0, 0);
+                transition: transform 3s ease, opacity 3s ease;
+            `;
             document.body.appendChild(particle);
 
-            setTimeout(() => {
-                particle.style.transform = `translate(${Math.random() * 100 - 50}px, ${Math.random() * 100 - 50}px)`;
+            requestAnimationFrame(() => {
+                particle.style.transform = `translate3d(${Math.random() * 100 - 50}px, ${Math.random() * 100 - 50}px, 0)`;
                 particle.style.opacity = 0;
-            }, 100);
+            });
 
             setTimeout(() => {
                 document.body.removeChild(particle);
+                particleCount--;
             }, 3000);
         }
 
-        setInterval(createParticle, 100);
+        setInterval(createParticle, 500);
     </script>
 </body>
 </html>
