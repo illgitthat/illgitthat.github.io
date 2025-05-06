@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remyai - Defining AI Solutions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0a23; /* Dark blue-purple background */
+            color: #e0e0e0; /* Light grey text for contrast */
+            scroll-behavior: smooth;
+        }
+        .hero-bg {
+            position: relative;
+            overflow: hidden; /* Ensures pseudo-elements don't cause scrollbars */
+        }
+        /* Animated gradient background for hero */
+        .hero-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, #1e1e3f, #3b3b7a, #2a2a52, #4c4c8c);
+            background-size: 400% 400%;
+            animation: gradientBG 20s ease infinite;
+            z-index: 0;
+            opacity: 0.6;
+        }
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .content-overlay {
+            position: relative;
+            z-index: 1;
+        }
+        .glassmorphism {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .service-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 25px -5px rgba(76, 76, 140, 0.3), 0 10px 10px -5px rgba(76, 76, 140, 0.2);
+        }
+        nav a {
+            transition: color 0.3s ease;
+        }
+        nav a:hover {
+            color: #a7a7ff; /* Lighter purple for hover */
+        }
+        .section-title {
+            position: relative;
+            display: inline-block;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem; /* Spacing below title */
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background-color: #a7a7ff; /* Accent color for underline */
+            border-radius: 2px;
+        }
+        /* Particle container styling */
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0; /* Behind hero text, but above solid background */
+        }
+        .btn-premium {
+            background-color: #7e57c2; /* Deep purple */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .btn-premium:hover {
+            background-color: #673ab7; /* Darker purple */
+            transform: translateY(-2px);
+        }
+        .input-field {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #e0e0e0;
+            border-radius: 0.375rem; /* Tailwind's rounded-md */
+            padding: 0.75rem 1rem;
+        }
+        .input-field::placeholder {
+            color: #a0aec0; /* Tailwind's gray-500 */
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: #a7a7ff;
+            box-shadow: 0 0 0 2px rgba(167, 167, 255, 0.5);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <nav class="fixed top-0 left-0 right-0 z-50 p-4 bg-opacity-50 bg-gray-900 backdrop-blur-md shadow-lg">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="#" class="text-2xl font-bold text-white">Remy<span class="text-purple-400">ai</span></a>
+            <div class="space-x-6 text-lg">
+                <a href="#manifesto" class="text-gray-300 hover:text-purple-300">Manifesto</a>
+                <a href="#value" class="text-gray-300 hover:text-purple-300">Value</a>
+                <a href="#services" class="text-gray-300 hover:text-purple-300">Services</a>
+                <a href="#contact" class="text-gray-300 hover:text-purple-300">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <section id="hero" class="min-h-screen flex items-center justify-center text-center hero-bg px-4">
+        <div id="particles-js"></div> <div class="content-overlay">
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 leading-tight">
+                Defining <span class="text-purple-400">AI</span> Solutions.
+            </h1>
+            <p class="text-xl md:text-2xl text-gray-300 mb-10 max-w-3xl mx-auto">
+                Your comprehensive AI hub, facilitating connections and expansions for businesses seeking improvement.
+            </p>
+            <a href="#manifesto" class="btn-premium text-lg">
+                Discover More
+            </a>
+        </div>
+    </section>
+
+    <section id="manifesto" class="py-20 px-4">
+        <div class="container mx-auto max-w-4xl text-center">
+            <h2 class="text-4xl font-bold mb-12 section-title">Our Manifesto</h2>
+            <div class="glassmorphism p-8 md:p-12 rounded-xl shadow-2xl">
+                <p class="text-lg md:text-xl leading-relaxed text-gray-200">
+                    We have meticulously developed partnerships with leading artificial intelligence solution providers to address critical challenges within the business landscape. Our solutions are designed to integrate seamlessly with your existing business platforms, thereby ensuring enhanced outcomes through advanced AI technology. This commitment keeps you informed and competitive in the rapidly evolving field of artificial intelligence. Remyai serves as your comprehensive AI hub, facilitating connections and expansions for businesses seeking improvement in various areas.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section id="value" class="py-20 px-4 bg-gray-900 bg-opacity-30">
+        <div class="container mx-auto max-w-4xl text-center">
+            <h2 class="text-4xl font-bold mb-12 section-title">Our Unique Value Proposition</h2>
+            <div class="glassmorphism p-8 md:p-12 rounded-xl shadow-2xl">
+                <p class="text-lg md:text-xl leading-relaxed text-gray-200">
+                    We recognize that numerous companies aim to assist everyday businesses; however, many of these organizations lack the necessary reach to effectively engage those beyond the technology sector. Our role is to bridge this gap. By partnering with us, you will not only benefit from exclusive discounts with select providers but also gain access to high-quality services designed to foster your business's growth.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section id="services" class="py-20 px-4">
+        <div class="container mx-auto text-center">
+            <h2 class="text-4xl font-bold mb-16 section-title">Our Services</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8">
+                <div class="service-card glassmorphism p-6 rounded-lg text-center">
+                    <h3 class="text-xl font-semibold text-purple-300 mb-2">Content Management</h3>
+                    <p class="text-sm text-gray-400">AI-powered content creation, organization, and optimization.</p>
+                </div>
+                <div class="service-card glassmorphism p-6 rounded-lg text-center">
+                    <h3 class="text-xl font-semibold text-purple-300 mb-2">Marketing</h3>
+                    <p class="text-sm text-gray-400">Automated campaigns, analytics, and personalized customer engagement.</p>
+                </div>
+                <div class="service-card glassmorphism p-6 rounded-lg text-center">
+                    <h3 class="text-xl font-semibold text-purple-300 mb-2">Social Media</h3>
+                    <p class="text-sm text-gray-400">Smart scheduling, trend analysis, and content generation.</p>
+                </div>
+                <div class="service-card glassmorphism p-6 rounded-lg text-center">
+                    <h3 class="text-xl font-semibold text-purple-300 mb-2">Office Software</h3>
+                    <p class="text-sm text-gray-400">Intelligent automation for documents, spreadsheets, and presentations.</p>
+                </div>
+                <div class="service-card glassmorphism p-6 rounded-lg text-center">
+                    <h3 class="text-xl font-semibold text-purple-300 mb-2">Customer Service</h3>
+                    <p class="text-sm text-gray-400">AI chatbots, automated support tickets, and sentiment analysis.</p>
+                </div>
+                <div class="service-card glassmorphism p-6 rounded-lg text-center">
+                    <h3 class="text-xl font-semibold text-purple-300 mb-2">Design</h3>
+                    <p class="text-sm text-gray-400">AI-assisted graphic design, UI/UX suggestions, and branding.</p>
+                </div>
+                <div class="service-card glassmorphism p-6 rounded-lg text-center">
+                    <h3 class="text-xl font-semibold text-purple-300 mb-2">Human Resources</h3>
+                    <p class="text-sm text-gray-400">Automated recruitment, employee onboarding, and performance analytics.</p>
+                </div>
+                <div class="service-card glassmorphism p-6 rounded-lg text-center">
+                    <h3 class="text-xl font-semibold text-purple-300 mb-2">Security</h3>
+                    <p class="text-sm text-gray-400">AI-driven threat detection, data protection, and fraud prevention.</p>
+                </div>
+                <div class="service-card glassmorphism p-6 rounded-lg text-center">
+                    <h3 class="text-xl font-semibold text-purple-300 mb-2">E-commerce</h3>
+                    <p class="text-sm text-gray-400">Personalized recommendations, inventory management, and sales forecasting.</p>
+                </div>
+                <div class="service-card glassmorphism p-6 rounded-lg text-center">
+                    <h3 class="text-xl font-semibold text-purple-300 mb-2">Accounting</h3>
+                    <p class="text-sm text-gray-400">Automated bookkeeping, expense tracking, and financial reporting.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="py-20 px-4 bg-gray-900 bg-opacity-30">
+        <div class="container mx-auto max-w-3xl text-center">
+            <h2 class="text-4xl font-bold mb-12 section-title">Get in Touch</h2>
+            <div class="glassmorphism p-8 md:p-12 rounded-xl shadow-2xl">
+                <p class="text-lg text-gray-300 mb-8">
+                    We respectfully request that you identify the specific areas within your organization that may be facing challenges. We will respond promptly with thoughtfully tailored solutions aimed at providing you with the necessary assistance in a timely manner.
+                </p>
+                <form action="mailto:your-email@remyai.com" method="post" enctype="text/plain">
+                    <div class="mb-6">
+                        <label for="name" class="block text-left text-gray-300 mb-2">Your Name:</label>
+                        <input type="text" id="name" name="name" class="w-full input-field" placeholder="e.g., Jane Doe" required>
+                    </div>
+                    <div class="mb-6">
+                        <label for="email" class="block text-left text-gray-300 mb-2">Your Email:</label>
+                        <input type="email" id="email" name="email" class="w-full input-field" placeholder="e.g., jane.doe@example.com" required>
+                    </div>
+                    <div class="mb-6">
+                        <label for="organization" class="block text-left text-gray-300 mb-2">Organization (Optional):</label>
+                        <input type="text" id="organization" name="organization" class="w-full input-field" placeholder="e.g., Example Corp">
+                    </div>
+                    <div class="mb-8">
+                        <label for="challenges" class="block text-left text-gray-300 mb-2">Challenges / Inquiries:</label>
+                        <textarea id="challenges" name="challenges" rows="5" class="w-full input-field" placeholder="Describe the areas where you need assistance..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn-premium text-lg w-full md:w-auto">
+                        Send Inquiry
+                    </button>
+                </form>
+                <p class="mt-10 text-gray-400">Or email us directly at: <a href="mailto:contact@remyai.com" class="text-purple-300 hover:text-purple-200 underline">contact@remyai.com</a></p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-10 text-center border-t border-gray-700">
+        <p class="text-gray-500">&copy; <span id="currentYear"></span> Remyai. All rights reserved.</p>
+        <p class="text-gray-600 text-sm mt-1">Crafting the Future of AI Solutions</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        // Particle.js configuration
+        particlesJS("particles-js", {
+            "particles": {
+                "number": {
+                    "value": 80, // Number of particles
+                    "density": {
+                        "enable": true,
+                        "value_area": 800
+                    }
+                },
+                "color": {
+                    "value": "#a7a7ff" // Particle color (light purple)
+                },
+                "shape": {
+                    "type": "circle", // Shape of particles (circle, edge, triangle, polygon, star, image)
+                    "stroke": {
+                        "width": 0,
+                        "color": "#000000"
+                    },
+                    "polygon": {
+                        "nb_sides": 5
+                    }
+                },
+                "opacity": {
+                    "value": 0.6, // Base opacity of particles
+                    "random": true, // Random opacity
+                    "anim": {
+                        "enable": true,
+                        "speed": 1,
+                        "opacity_min": 0.1,
+                        "sync": false
+                    }
+                },
+                "size": {
+                    "value": 3, // Base size of particles
+                    "random": true, // Random size
+                    "anim": {
+                        "enable": false,
+                        "speed": 40,
+                        "size_min": 0.1,
+                        "sync": false
+                    }
+                },
+                "line_linked": {
+                    "enable": true,
+                    "distance": 150, // Max distance for linking lines
+                    "color": "#50507a", // Line color
+                    "opacity": 0.4,
+                    "width": 1
+                },
+                "move": {
+                    "enable": true,
+                    "speed": 3, // Speed of particle movement
+                    "direction": "none", // Direction of movement (none, top, top-right, right, bottom-right, bottom, bottom-left, left, top-left)
+                    "random": false,
+                    "straight": false, // Particles move straight or not
+                    "out_mode": "out", // Behavior when particles move out of canvas (out, bounce)
+                    "bounce": false,
+                    "attract": {
+                        "enable": false,
+                        "rotateX": 600,
+                        "rotateY": 1200
+                    }
+                }
+            },
+            "interactivity": {
+                "detect_on": "canvas",
+                "events": {
+                    "onhover": {
+                        "enable": true,
+                        "mode": "grab" // "grab" creates a link between particle and mouse, "repulse" pushes particles away
+                    },
+                    "onclick": {
+                        "enable": true,
+                        "mode": "push" // "push" adds particles, "remove" removes particles
+                    },
+                    "resize": true
+                },
+                "modes": {
+                    "grab": {
+                        "distance": 140,
+                        "line_linked": {
+                            "opacity": 1
+                        }
+                    },
+                    "bubble": {
+                        "distance": 400,
+                        "size": 40,
+                        "duration": 2,
+                        "opacity": 8,
+                        "speed": 3
+                    },
+                    "repulse": {
+                        "distance": 100,
+                        "duration": 0.4
+                    },
+                    "push": {
+                        "particles_nb": 4 // Number of particles to push
+                    },
+                    "remove": {
+                        "particles_nb": 2
+                    }
+                }
+            },
+            "retina_detect": true
+        });
+
+        // Smooth scroll for navigation links
+        document.querySelectorAll('nav a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Update current year in footer
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        // Simple scroll reveal animation for sections (optional)
+        const sections = document.querySelectorAll('section[id]');
+        const revealSection = (entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in-visible');
+                    // observer.unobserve(entry.target); // Optional: stop observing after revealed
+                } else {
+                    // Optional: remove class if you want animation to replay on scroll up/down
+                    // entry.target.classList.remove('fade-in-visible');
+                }
+            });
+        };
+
+        const sectionObserver = new IntersectionObserver(revealSection, {
+            root: null, // relative to document viewport
+            threshold: 0.15, // 15% of item visible
+            rootMargin: '0px 0px -50px 0px' // trigger a bit earlier
+        });
+
+        sections.forEach(section => {
+            section.classList.add('fade-in-initial'); // Initial state for fade-in
+            sectionObserver.observe(section);
+        });
+
+    </script>
+    <style>
+        /* Styles for scroll reveal animation */
+        .fade-in-initial {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .fade-in-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</body>
+</html>
