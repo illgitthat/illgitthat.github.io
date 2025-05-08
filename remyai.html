@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-UTF-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Remyai - Defining AI Solutions</title>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -28,7 +28,7 @@
             background: linear-gradient(45deg, #1e1e3f, #3b3b7a, #2a2a52, #4c4c8c);
             background-size: 400% 400%;
             animation: gradientBG 20s ease infinite;
-            z-index: 0;
+            z-index: 0; /* Base layer */
             opacity: 0.6;
         }
         @keyframes gradientBG {
@@ -36,10 +36,32 @@
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
+
+        /* New Scanning Lines Canvas Styling */
+        #scanningLinesCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1; /* Above gradient, below particles */
+        }
+
+        /* Particle container styling */
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 2; /* Above scanning lines, below content overlay */
+        }
+
         .content-overlay {
             position: relative;
-            z-index: 1;
+            z-index: 3; /* Highest layer for text and buttons */
         }
+
         .glassmorphism {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(10px);
@@ -76,15 +98,6 @@
             background-color: #a7a7ff; /* Accent color for underline */
             border-radius: 2px;
         }
-        /* Particle container styling */
-        #particles-js {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            z-index: 0; /* Behind hero text, but above solid background */
-        }
         .btn-premium {
             background-color: #7e57c2; /* Deep purple */
             color: white;
@@ -113,6 +126,16 @@
             border-color: #a7a7ff;
             box-shadow: 0 0 0 2px rgba(167, 167, 255, 0.5);
         }
+        /* Styles for scroll reveal animation */
+        .fade-in-initial {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .fade-in-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
     </style>
 </head>
 <body class="antialiased">
@@ -123,17 +146,30 @@
                 <img src="remyai_logo.jpg" alt="Remyai Logo" class="h-8 w-8 mr-2">
                 Remy<span class="text-purple-400">ai</span>
             </a>
-            <div class="space-x-6 text-lg">
+            <div class="hidden md:flex space-x-6 text-lg">
                 <a href="#manifesto" class="text-gray-300 hover:text-purple-300">Manifesto</a>
                 <a href="#value" class="text-gray-300 hover:text-purple-300">Value</a>
                 <a href="#services" class="text-gray-300 hover:text-purple-300">Services</a>
                 <a href="#contact" class="text-gray-300 hover:text-purple-300">Contact</a>
             </div>
+            <div class="md:hidden">
+                <button id="mobileMenuButton" class="text-gray-300 hover:text-purple-300 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+        </div>
+        <div id="mobileMenu" class="hidden md:hidden mt-2 py-2 bg-gray-800 bg-opacity-70 rounded-lg shadow-xl">
+            <a href="#manifesto" class="block px-4 py-2 text-gray-300 hover:bg-purple-700 hover:text-white">Manifesto</a>
+            <a href="#value" class="block px-4 py-2 text-gray-300 hover:bg-purple-700 hover:text-white">Value</a>
+            <a href="#services" class="block px-4 py-2 text-gray-300 hover:bg-purple-700 hover:text-white">Services</a>
+            <a href="#contact" class="block px-4 py-2 text-gray-300 hover:bg-purple-700 hover:text-white">Contact</a>
         </div>
     </nav>
 
-    <section id="hero" class="min-h-screen flex items-center justify-center text-center hero-bg px-4">
-        <div id="particles-js"></div> <div class="content-overlay">
+    <section id="hero" class="min-h-screen flex items-center justify-center text-center hero-bg px-4 pt-16 md:pt-0">
+        <canvas id="scanningLinesCanvas"></canvas>
+        <div id="particles-js"></div>
+        <div class="content-overlay">
             <h1 class="text-5xl md:text-7xl font-extrabold mb-6 leading-tight">
                 Defining <span class="text-purple-400">AI</span> Solutions.
             </h1>
@@ -146,9 +182,9 @@
         </div>
     </section>
 
-    <section id="manifesto" class="py-20 px-4">
+    <section id="manifesto" class="py-16 md:py-20 px-4">
         <div class="container mx-auto max-w-4xl text-center">
-            <h2 class="text-4xl font-bold mb-12 section-title">Our Manifesto</h2>
+            <h2 class="text-3xl md:text-4xl font-bold mb-12 section-title">Our Manifesto</h2>
             <div class="glassmorphism p-8 md:p-12 rounded-xl shadow-2xl">
                 <p class="text-lg md:text-xl leading-relaxed text-gray-200">
                     We have meticulously developed partnerships with leading artificial intelligence solution providers to address critical challenges within the business landscape. Our solutions are designed to integrate seamlessly with your existing business platforms, thereby ensuring enhanced outcomes through advanced AI technology. This commitment keeps you informed and competitive in the rapidly evolving field of artificial intelligence. Remyai serves as your comprehensive AI hub, facilitating connections and expansions for businesses seeking improvement in various areas.
@@ -157,9 +193,9 @@
         </div>
     </section>
 
-    <section id="value" class="py-20 px-4 bg-gray-900 bg-opacity-30">
+    <section id="value" class="py-16 md:py-20 px-4 bg-gray-900 bg-opacity-30">
         <div class="container mx-auto max-w-4xl text-center">
-            <h2 class="text-4xl font-bold mb-12 section-title">Our Unique Value Proposition</h2>
+            <h2 class="text-3xl md:text-4xl font-bold mb-12 section-title">Our Unique Value Proposition</h2>
             <div class="glassmorphism p-8 md:p-12 rounded-xl shadow-2xl">
                 <p class="text-lg md:text-xl leading-relaxed text-gray-200">
                     We recognize that numerous companies aim to assist everyday businesses; however, many of these organizations lack the necessary reach to effectively engage those beyond the technology sector. Our role is to bridge this gap. By partnering with us, you will not only benefit from exclusive discounts with select providers but also gain access to high-quality services designed to foster your business's growth.
@@ -168,10 +204,10 @@
         </div>
     </section>
 
-    <section id="services" class="py-20 px-4">
+    <section id="services" class="py-16 md:py-20 px-4">
         <div class="container mx-auto text-center">
-            <h2 class="text-4xl font-bold mb-16 section-title">Our Services</h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8">
+            <h2 class="text-3xl md:text-4xl font-bold mb-16 section-title">Our Services</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
                 <div class="service-card glassmorphism p-6 rounded-lg text-center">
                     <h3 class="text-xl font-semibold text-purple-300 mb-2">Content Management</h3>
                     <p class="text-sm text-gray-400">AI-powered content creation, organization, and optimization.</p>
@@ -216,9 +252,9 @@
         </div>
     </section>
 
-    <section id="contact" class="py-20 px-4 bg-gray-900 bg-opacity-30">
+    <section id="contact" class="py-16 md:py-20 px-4 bg-gray-900 bg-opacity-30">
         <div class="container mx-auto max-w-3xl text-center">
-            <h2 class="text-4xl font-bold mb-12 section-title">Get in Touch</h2>
+            <h2 class="text-3xl md:text-4xl font-bold mb-12 section-title">Get in Touch</h2>
             <div class="glassmorphism p-8 md:p-12 rounded-xl shadow-2xl">
                 <p class="text-lg text-gray-300 mb-8">
                     We respectfully request that you identify the specific areas within your organization that may be facing challenges. We will respond promptly with thoughtfully tailored solutions aimed at providing you with the necessary assistance in a timely manner.
@@ -249,174 +285,263 @@
         </div>
     </section>
 
-    <footer class="py-10 text-center border-t border-gray-700">
+    <footer class="py-10 text-center border-t border-gray-700 border-opacity-50">
         <p class="text-gray-500">&copy; <span id="currentYear"></span> Remyai. All rights reserved.</p>
         <p class="text-gray-600 text-sm mt-1">Crafting the Future of AI Solutions</p>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script>
-        // Particle.js configuration
-        particlesJS("particles-js", {
-            "particles": {
-                "number": {
-                    "value": 80, // Number of particles
-                    "density": {
-                        "enable": true,
-                        "value_area": 800
+        // Ensure DOM is fully loaded before running scripts
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- Mobile Menu Toggle ---
+            const mobileMenuButton = document.getElementById('mobileMenuButton');
+            const mobileMenu = document.getElementById('mobileMenu');
+            if (mobileMenuButton && mobileMenu) {
+                mobileMenuButton.addEventListener('click', () => {
+                    mobileMenu.classList.toggle('hidden');
+                });
+                // Close menu when a link is clicked
+                mobileMenu.querySelectorAll('a').forEach(link => {
+                    link.addEventListener('click', () => {
+                        mobileMenu.classList.add('hidden');
+                    });
+                });
+            }
+
+
+            // --- Scanning Lines Animation ---
+            const canvas = document.getElementById('scanningLinesCanvas');
+            const ctx = canvas.getContext('2d');
+            let lines = [];
+            const lineColor = 'rgba(125, 249, 255, 0.3)'; // Electric Blue with some transparency
+            const lineLength = 100; // Length of the scanning part of the line
+            const lineSpeed = 1.5; // Pixels per frame
+            const spawnInterval = 100; // Milliseconds between new line spawns
+            let lastSpawn = 0;
+
+            function resizeCanvas() {
+                canvas.width = canvas.offsetWidth;
+                canvas.height = canvas.offsetHeight;
+            }
+
+            class Line {
+                constructor() {
+                    this.isVertical = Math.random() > 0.5;
+                    if (this.isVertical) {
+                        this.x = Math.random() * canvas.width;
+                        this.y = Math.random() > 0.5 ? -lineLength : canvas.height;
+                        this.vy = Math.random() > 0.5 ? lineSpeed : -lineSpeed;
+                        this.vx = 0;
+                        this.width = 1.5; // Thinner for vertical
+                        this.height = lineLength * (0.5 + Math.random() * 1); // Varying length
+                    } else {
+                        this.y = Math.random() * canvas.height;
+                        this.x = Math.random() > 0.5 ? -lineLength : canvas.width;
+                        this.vx = Math.random() > 0.5 ? lineSpeed : -lineSpeed;
+                        this.vy = 0;
+                        this.width = lineLength * (0.5 + Math.random() * 1); // Varying length
+                        this.height = 1.5; // Thinner for horizontal
                     }
-                },
-                "color": {
-                    "value": "#a7a7ff" // Particle color (light purple)
-                },
-                "shape": {
-                    "type": "circle", // Shape of particles (circle, edge, triangle, polygon, star, image)
-                    "stroke": {
-                        "width": 0,
-                        "color": "#000000"
-                    },
-                    "polygon": {
-                        "nb_sides": 5
+                    this.opacity = 0.1 + Math.random() * 0.4; // Varying opacity
+                }
+
+                update() {
+                    this.x += this.vx;
+                    this.y += this.vy;
+
+                    // Fade out effect (optional, could be more complex)
+                    // this.opacity -= 0.001;
+                }
+
+                draw() {
+                    ctx.beginPath();
+                    ctx.rect(this.x, this.y, this.width, this.height);
+                    ctx.fillStyle = `rgba(125, 249, 255, ${this.opacity})`; // Electric Blue with dynamic opacity
+                    ctx.shadowColor = 'rgba(125, 249, 255, 0.7)';
+                    ctx.shadowBlur = 10;
+                    ctx.fill();
+                    ctx.shadowColor = 'transparent'; // Reset shadow
+                    ctx.shadowBlur = 0;
+                }
+
+                isOutOfBounds() {
+                    return (
+                        this.opacity <= 0 ||
+                        (this.vx > 0 && this.x > canvas.width) ||
+                        (this.vx < 0 && this.x < -this.width) ||
+                        (this.vy > 0 && this.y > canvas.height) ||
+                        (this.vy < 0 && this.y < -this.height)
+                    );
+                }
+            }
+
+            function animateScanningLines(timestamp) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Spawn new lines
+                if (timestamp - lastSpawn > spawnInterval) {
+                    if (lines.length < 50) { // Max number of lines
+                         lines.push(new Line());
                     }
-                },
-                "opacity": {
-                    "value": 0.6, // Base opacity of particles
-                    "random": true, // Random opacity
-                    "anim": {
-                        "enable": true,
-                        "speed": 1,
-                        "opacity_min": 0.1,
-                        "sync": false
-                    }
-                },
-                "size": {
-                    "value": 3, // Base size of particles
-                    "random": true, // Random size
-                    "anim": {
-                        "enable": false,
-                        "speed": 40,
-                        "size_min": 0.1,
-                        "sync": false
-                    }
-                },
-                "line_linked": {
-                    "enable": true,
-                    "distance": 150, // Max distance for linking lines
-                    "color": "#50507a", // Line color
-                    "opacity": 0.4,
-                    "width": 1
-                },
-                "move": {
-                    "enable": true,
-                    "speed": 3, // Speed of particle movement
-                    "direction": "none", // Direction of movement (none, top, top-right, right, bottom-right, bottom, bottom-left, left, top-left)
-                    "random": false,
-                    "straight": false, // Particles move straight or not
-                    "out_mode": "out", // Behavior when particles move out of canvas (out, bounce)
-                    "bounce": false,
-                    "attract": {
-                        "enable": false,
-                        "rotateX": 600,
-                        "rotateY": 1200
+                    lastSpawn = timestamp;
+                }
+
+                // Update and draw lines
+                for (let i = lines.length - 1; i >= 0; i--) {
+                    lines[i].update();
+                    lines[i].draw();
+                    if (lines[i].isOutOfBounds()) {
+                        lines.splice(i, 1);
                     }
                 }
-            },
-            "interactivity": {
-                "detect_on": "canvas",
-                "events": {
-                    "onhover": {
-                        "enable": true,
-                        "mode": "grab" // "grab" creates a link between particle and mouse, "repulse" pushes particles away
-                    },
-                    "onclick": {
-                        "enable": true,
-                        "mode": "push" // "push" adds particles, "remove" removes particles
-                    },
-                    "resize": true
-                },
-                "modes": {
-                    "grab": {
-                        "distance": 140,
+                requestAnimationFrame(animateScanningLines);
+            }
+
+            // Initialize and start scanning lines if canvas exists
+            if (canvas) {
+                // Set initial size using a timeout to ensure layout is stable
+                setTimeout(() => {
+                    resizeCanvas();
+                    // Start animation
+                    requestAnimationFrame(animateScanningLines);
+                }, 100); // Delay slightly for layout calculation
+                window.addEventListener('resize', resizeCanvas);
+            }
+
+
+            // --- Particle.js configuration ---
+            if (document.getElementById('particles-js')) {
+                particlesJS("particles-js", {
+                    "particles": {
+                        "number": {
+                            "value": 60, // Reduced slightly for balance with new animation
+                            "density": {
+                                "enable": true,
+                                "value_area": 800
+                            }
+                        },
+                        "color": {
+                            "value": "#a7a7ff"
+                        },
+                        "shape": {
+                            "type": "circle",
+                        },
+                        "opacity": {
+                            "value": 0.5,
+                            "random": true,
+                            "anim": {
+                                "enable": true,
+                                "speed": 0.8,
+                                "opacity_min": 0.1,
+                                "sync": false
+                            }
+                        },
+                        "size": {
+                            "value": 2.5,
+                            "random": true,
+                        },
                         "line_linked": {
-                            "opacity": 1
+                            "enable": true,
+                            "distance": 130,
+                            "color": "#50507a",
+                            "opacity": 0.3,
+                            "width": 1
+                        },
+                        "move": {
+                            "enable": true,
+                            "speed": 2.5,
+                            "direction": "none",
+                            "random": true,
+                            "straight": false,
+                            "out_mode": "out",
                         }
                     },
-                    "bubble": {
-                        "distance": 400,
-                        "size": 40,
-                        "duration": 2,
-                        "opacity": 8,
-                        "speed": 3
+                    "interactivity": {
+                        "detect_on": "canvas",
+                        "events": {
+                            "onhover": {
+                                "enable": true,
+                                "mode": "grab"
+                            },
+                            "onclick": {
+                                "enable": true,
+                                "mode": "push"
+                            },
+                            "resize": true
+                        },
+                        "modes": {
+                            "grab": {
+                                "distance": 120,
+                                "line_linked": { "opacity": 0.7 }
+                            },
+                            "push": { "particles_nb": 3 },
+                        }
                     },
-                    "repulse": {
-                        "distance": 100,
-                        "duration": 0.4
-                    },
-                    "push": {
-                        "particles_nb": 4 // Number of particles to push
-                    },
-                    "remove": {
-                        "particles_nb": 2
+                    "retina_detect": true
+                });
+            }
+
+            // --- Smooth scroll for navigation links ---
+            document.querySelectorAll('nav a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        // Calculate offset for fixed navbar
+                        const navbarHeight = document.querySelector('nav').offsetHeight || 0;
+                        const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - navbarHeight - 20; // Extra 20px padding
+
+                        window.scrollTo({
+                            top: targetPosition,
+                            behavior: 'smooth'
+                        });
                     }
-                }
-            },
-            "retina_detect": true
-        });
-
-        // Smooth scroll for navigation links
-        document.querySelectorAll('nav a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const targetId = this.getAttribute('href');
-                const targetElement = document.querySelector(targetId);
-                if (targetElement) {
-                    targetElement.scrollIntoView({
-                        behavior: 'smooth'
-                    });
-                }
+                });
             });
+
+            // --- Update current year in footer ---
+            const currentYearElement = document.getElementById('currentYear');
+            if (currentYearElement) {
+                currentYearElement.textContent = new Date().getFullYear();
+            }
+
+            // --- Scroll reveal animation for sections ---
+            const sections = document.querySelectorAll('section[id]');
+            const revealSection = (entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('fade-in-visible');
+                    } else {
+                        // entry.target.classList.remove('fade-in-visible'); // Uncomment to re-animate on scroll up
+                    }
+                });
+            };
+
+            if (typeof IntersectionObserver !== 'undefined') {
+                const sectionObserver = new IntersectionObserver(revealSection, {
+                    root: null,
+                    threshold: 0.10, // A bit earlier trigger
+                    rootMargin: '0px 0px -40px 0px'
+                });
+
+                sections.forEach(section => {
+                    if (section.id !== 'hero') { // Don't fade in hero, it's immediately visible
+                        section.classList.add('fade-in-initial');
+                        sectionObserver.observe(section);
+                    }
+                });
+            } else {
+                // Fallback for older browsers: just show all sections
+                sections.forEach(section => {
+                     if (section.id !== 'hero') {
+                        section.classList.add('fade-in-visible');
+                     }
+                });
+            }
         });
-
-        // Update current year in footer
-        document.getElementById('currentYear').textContent = new Date().getFullYear();
-
-        // Simple scroll reveal animation for sections (optional)
-        const sections = document.querySelectorAll('section[id]');
-        const revealSection = (entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('fade-in-visible');
-                    // observer.unobserve(entry.target); // Optional: stop observing after revealed
-                } else {
-                    // Optional: remove class if you want animation to replay on scroll up/down
-                    // entry.target.classList.remove('fade-in-visible');
-                }
-            });
-        };
-
-        const sectionObserver = new IntersectionObserver(revealSection, {
-            root: null, // relative to document viewport
-            threshold: 0.15, // 15% of item visible
-            rootMargin: '0px 0px -50px 0px' // trigger a bit earlier
-        });
-
-        sections.forEach(section => {
-            section.classList.add('fade-in-initial'); // Initial state for fade-in
-            sectionObserver.observe(section);
-        });
-
     </script>
-    <style>
-        /* Styles for scroll reveal animation */
-        .fade-in-initial {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-        }
-        .fade-in-visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    </style>
 </body>
 </html>
