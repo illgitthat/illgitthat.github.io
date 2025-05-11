@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geology Final Exam Study Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* Light blue-gray background */
+        }
+        .flashcard-container {
+            perspective: 1000px;
+            min-height: 250px; /* Ensure container has height */
+        }
+        .flashcard {
+            width: 100%;
+            height: 250px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+            cursor: pointer;
+        }
+        .flashcard.is-flipped {
+            transform: rotateY(180deg);
+        }
+        .flashcard-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column; /* Allow content to stack vertically */
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            border-radius: 12px; /* Rounded corners */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            overflow-y: auto; /* Allow scrolling for long content */
+        }
+        .flashcard-front {
+            background-color: #ffffff; /* White front */
+            color: #1e3a8a; /* Dark blue text */
+        }
+        .flashcard-back {
+            background-color: #e0f2fe; /* Light cyan back */
+            color: #0c4a6e; /* Darker cyan text */
+            transform: rotateY(180deg);
+        }
+        .flashcard-content-title {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #64748b; /* Slate-500 for sub-titles */
+            margin-bottom: 8px;
+        }
+        .flashcard-content-main {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        .flashcard-content-answer {
+            font-size: 1rem;
+            font-weight: 400;
+        }
+        /* Custom button styles */
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: background-color 0.3s, transform 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+        .btn-primary {
+            background-color: #2563eb; /* Blue-600 */
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #1d4ed8; /* Blue-700 */
+        }
+        .btn-secondary {
+            background-color: #64748b; /* Slate-500 */
+            color: white;
+        }
+        .btn-secondary:hover {
+            background-color: #475569; /* Slate-600 */
+        }
+        select {
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1; /* Slate-300 */
+            background-color: white;
+        }
+        /* Progress bar */
+        .progress-bar-container {
+            width: 100%;
+            background-color: #e5e7eb; /* Gray-200 */
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        .progress-bar {
+            height: 10px;
+            background-color: #2563eb; /* Blue-600 */
+            width: 0%; /* Initial width */
+            transition: width 0.3s ease-in-out;
+            border-radius: 8px 0 0 8px; /* Keep left radius */
+        }
+        #no-cards-message {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+            color: #475569; /* Slate-600 */
+        }
+    </style>
+</head>
+<body class="bg-slate-100 flex flex-col items-center justify-center min-h-screen p-4 sm:p-6">
+
+    <div class="w-full max-w-2xl bg-white shadow-xl rounded-xl p-6 sm:p-8">
+        <header class="mb-6 text-center">
+            <h1 class="text-3xl sm:text-4xl font-bold text-blue-700">GEOL 104: Historical Geology</h1>
+            <p class="text-lg text-slate-600 mt-1">Final Exam Study Guide</p>
+        </header>
+
+        <div class="mb-6">
+            <label for="chapter-select" class="block text-sm font-medium text-slate-700 mb-1">Select a Chapter/Topic:</label>
+            <select id="chapter-select" class="w-full p-3 border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150">
+                <option value="">-- Select a Topic --</option>
+                </select>
+        </div>
+
+        <div id="flashcard-area" class="mb-6">
+            <div id="flashcard-container" class="flashcard-container">
+                <div id="flashcard" class="flashcard">
+                    <div class="flashcard-face flashcard-front">
+                        <p id="flashcard-question" class="flashcard-content-main">Select a chapter to begin.</p>
+                    </div>
+                    <div class="flashcard-face flashcard-back">
+                        <p id="flashcard-answer" class="flashcard-content-answer"></p>
+                    </div>
+                </div>
+            </div>
+            <div id="no-cards-message" class="hidden">
+                <p>No flashcards available for this topic yet, or you've reached the end!</p>
+                <p class="text-sm text-slate-500 mt-2">Select another topic from the dropdown menu.</p>
+            </div>
+        </div>
+
+        <div id="card-navigation-info" class="text-center text-sm text-slate-500 mb-2">
+            <span id="current-card-number">0</span> / <span id="total-cards-number">0</span>
+        </div>
+        <div class="progress-bar-container mb-6">
+            <div id="progress-bar" class="progress-bar"></div>
+        </div>
+
+        <div id="controls" class="flex flex-col sm:flex-row justify-between items-center space-y-3 sm:space-y-0 sm:space-x-3">
+            <button id="prev-card" class="btn btn-secondary w-full sm:w-auto">Previous</button>
+            <button id="flip-card" class="btn btn-primary w-full sm:w-auto flex-grow">Flip Card</button>
+            <button id="next-card" class="btn btn-secondary w-full sm:w-auto">Next</button>
+        </div>
+         <p class="text-xs text-slate-500 mt-6 text-center">
+            Note: The final exam is not cumulative (except for a potential extra credit question). All drawings need a scale. This guide is based on the provided overview and may not be exhaustive.
+        </p>
+    </div>
+
+    <script>
+        // --- Data for Flashcards ---
+        const flashcardData = {
+            "Chapter 7: Reef Builders": [
+                { q: "To which group does a fossil sponge belong?", a: "Porifera. They are simple multicellular organisms." },
+                { q: "What are spicules and their composition?", a: "Spicules are structural/skeletal elements found in most sponges. They can be calcareous (calcium carbonate) or siliceous (silica)." },
+                { q: "How can you differentiate between tabulate and rugose corals?", a: "Tabulate corals are always colonial, have well-developed tabulae (horizontal internal partitions), and typically lack septa (vertical internal partitions) or have them poorly developed. Rugose corals (horn corals) can be solitary or colonial, possess septa, and may or may not have tabulae." },
+                { q: "Identify these parts in a coral: septae, tabulae, theca.", a: "Septae: Vertical radial plates within the corallite. Tabulae: Horizontal plates within the corallite. Theca: The outer wall of a corallite." },
+                { q: "What is the major difference between sponges and corals in terms of complexity (tissue organization)?", a: "Corals (Cnidaria) have true tissue-level organization (e.g., epidermis, gastrodermis, nerve net), whereas sponges (Porifera) have specialized cells but lack true coordinated tissues and organs." },
+                { q: "Identify specifically, the Bryozoan Archimedes.", a: "Archimedes is a genus of fenestrate bryozoan characterized by a distinctive corkscrew-shaped or spiral central axis that supported the lace-like colony." },
+                { q: "What is the difference between a zooarium and a zooecium in Bryozoans?", a: "A zooarium is the entire bryozoan colony. A zooecium (plural: zooecia) is the tiny, individual, box-like or tubular chamber that houses a single zooid (the individual bryozoan animal)." },
+                { q: "Describe the plane of symmetry in a brachiopod (especially as compared to a bivalve).", a: "A brachiopod has a plane of symmetry that is perpendicular to the hinge line and passes through the middle of both valves, dividing the shell into two mirror-image halves (left and right). In contrast, a bivalve's plane of symmetry typically runs between the two valves." },
+                { q: "What are the major parts of a brachiopod, including brachial and pedicle valves?", a: "Major parts include two valves: the pedicle valve (usually larger, contains the pedicle opening for attachment) and the brachial valve (contains supports for the lophophore, the feeding organ). Other parts can include the hinge line, umbo, and internal structures like muscle scars and lophophore supports." },
+                { q: "What is the difference between articulate and inarticulate brachiopods?", a: "Articulate brachiopods have valves that are hinged together with teeth and sockets. Inarticulate brachiopods lack this complex hinge mechanism and their valves are held together primarily by muscles; their shells are often phosphatic." }
+            ],
+            "Chapter 8: Molluscs": [
+                { q: "How would you identify a bivalve fossil?", a: "A bivalve is a mollusc with two shells (valves), typically hinged. Examples: clams, oysters, mussels, scallops. Look for the two valves, hinge area, and often concentric growth lines." },
+                { q: "How would you identify a gastropod fossil?", a: "A gastropod is a mollusc that usually has a single, often coiled, shell. Examples: snails, limpets. Slugs are gastropods but rarely fossilize. Look for a spiral or cap-shaped shell with an opening (aperture)." },
+                { q: "How would you identify a cephalopod fossil?", a: "A cephalopod is a marine mollusc with a prominent head, tentacles, and often a chambered shell (e.g., nautiloids, ammonoids) or an internal shell (e.g., belemnites). Look for chambered structures, suture lines (in ammonoids), or a cigar-shaped internal shell (belemnites)." },
+                { q: "What are muscle scars on a bivalve or bivalve diagram?", a: "Muscle scars are impressions on the inner surface of a bivalve's shell where the adductor muscles (which close the valves) and sometimes other muscles (like pallial muscles) were attached." },
+                { q: "Identify the apex and aperture on a gastropod shell.", a: "The apex is the pointed tip or top of a coiled gastropod shell (the oldest part). The aperture is the main opening of the shell from which the snail's body emerges." },
+                { q: "Describe different cephalopod suture types and why they are important (including age ranges).", a: "Suture lines are the lines of contact between the internal septa and the outer shell wall in ammonoid and nautiloid cephalopods. Types include: \n1. Goniatitic: Simple, angular lobes and saddles (Paleozoic, esp. Devonian-Permian). \n2. Ceratitic: Frilled or serrated lobes and smooth saddles (Triassic). \n3. Ammonitic: Highly complex, frilled/crenulated lobes and saddles (Jurassic-Cretaceous). \nThey are important for biostratigraphy (age dating rocks) and show evolutionary trends in complexity." }
+            ],
+            "Chapter 9: Arthropods, Echinoderms, Conodonts": [
+                { q: "How would you identify a fossil as an arthropod?", a: "Arthropods have a segmented body, a chitinous exoskeleton (often molted), and jointed appendages. Examples: trilobites, insects (rare as fossils), crustaceans, eurypterids." },
+                { q: "How would you identify a fossil as an echinoderm?", a: "Echinoderms are marine animals typically characterized by radial symmetry (usually five-fold), a spiny skin (ossicles made of calcite), and a water vascular system. Examples: crinoids, blastoids, starfish, sea urchins (echinoids), brittle stars." },
+                { q: "How would you identify a fossil as a conodont element?", a: "Conodonts are microscopic, tooth-like phosphatic fossils. They come in various forms (blade, bar, platform) and were parts of an extinct, eel-like jawless vertebrate. They are primarily identified using a microscope but larger elements might be visible." },
+                { q: "How would you identify a trilobite?", a: "A trilobite is an extinct marine arthropod with a distinctive three-lobed body shape (longitudinally: an axial lobe flanked by two pleural lobes) and three main body sections (latitudinally: cephalon/head, thorax/body, pygidium/tail)." },
+                { q: "What are the body regions of a trilobite (both latitudinal and longitudinal)?", a: "Latitudinal (front to back): Cephalon (head), Thorax (segmented middle part), Pygidium (tail piece). Longitudinal (side to side): A central Axial Lobe and two lateral Pleural Lobes." },
+                { q: "How would you identify a crinoid?", a: "Crinoids ('sea lilies') are echinoderms often characterized by a stem (column) made of disc-like ossicles (columnals), a cup-like body (calyx), and branching arms used for filter-feeding. Fossil crinoids are often found as disarticulated columnals or calyx plates." },
+                { q: "What part of a crinoid most often fossilizes?", a: "The individual disc-like segments of the stem, called columnals, are the most commonly fossilized parts of crinoids. Complete crinoids are rarer." },
+                { q: "How would you identify an echinoid?", a: "Echinoids are echinoderms like sea urchins and sand dollars. Regular echinoids (sea urchins) are typically globular with long spines (spines often detach). Irregular echinoids (sand dollars, heart urchins) are often flattened and show bilateral symmetry superimposed on radial symmetry." },
+                { q: "How would you identify a conodont blade, bar, or platform element (from an image)?", a: "Blade elements are elongated and tooth-like or saw-like. Bar elements are typically elongated with a series of denticles along a bar. Platform elements are more complex, often broad and flattened, with various arrangements of denticles, ridges, and basins. (Identification requires comparing to known morphologies)." }
+            ],
+            "Chapter 10: Pollen and Climate": [
+                { q: "Explain why pollen is important for reconstructing paleoenvironments.", a: "Pollen grains are (1) produced in large quantities, (2) widely dispersed by wind or water, (3) have distinctive morphologies identifiable to plant taxa (often genus or family), and (4) are highly resistant to decay, especially in anaerobic sediments. Since plant distribution is closely tied to climate, fossil pollen assemblages can indicate past vegetation and thus paleoclimates." },
+                { q: "Understand the relationship between pollen and temperature.", a: "Different plant species have different temperature tolerances. For example, spruce and birch pollen indicate cool or cold climates, while oak and palm pollen suggest warmer conditions. Shifts in the relative abundance of different pollen types in a sedimentary sequence can indicate changes in temperature over time." },
+                { q: "Give an example of pollen from a warm environment.", a: "Oak (Quercus) pollen, Palm (Arecaceae) pollen, or pollen from other broadleaf deciduous trees common in temperate to tropical zones." },
+                { q: "Give an example of pollen from a cold environment.", a: "Spruce (Picea) pollen, Birch (Betula) pollen, or Fir (Abies) pollen." },
+                { q: "Give an example of pollen from a transitional environment (e.g., cool temperate).", a: "Pine (Pinus) pollen (many species have wide ranges but some are specific), Alder (Alnus) pollen, or a mix of warm and cold indicators." }
+            ],
+            "Chapter 11: Dinosaur Biomechanics": [
+                { q: "How do you calculate a dinosaur's approximate leg length from its foot length?", a: "A general rule of thumb for many bipedal dinosaurs is that the leg length (to the hip) is approximately 4 to 5 times the length of the foot (pes). So, Leg Length (L) ≈ 4 * Foot Length (FL). This is an estimation and varies between species." },
+                { q: "Understand quadrupedal vs. bipedal and be able to identify whether a trackway more likely comes from a biped or quadruped.", a: "Quadrupedal animals walk on four legs; their trackways will show patterns of four prints (manus/hand and pes/foot prints). Bipedal animals walk on two legs; their trackways will show only two prints (pes prints) in sequence. Quadrupedal trackways may show forelimb prints smaller than hindlimb prints, or overprinting." },
+                { q: "Explain how you might approximate a dinosaur's dimensionless speed when you can't measure actual speed.", a: "Dimensionless speed can be estimated using the relative stride length. Stride length (SL) is the distance between two successive prints of the same foot. Hip height (h) can be estimated (e.g., from foot length). The ratio SL/h is related to dimensionless speed. Higher SL/h ratios generally indicate faster relative speeds (running vs. walking). The formula is v' = v / (g * h)^0.5, where v is actual speed, g is gravity." }
+            ],
+            "Chapter 12: Evolution in the Fossil Record": [
+                { q: "Explain the term 'origination' in the context of evolution.", a: "Origination refers to the evolutionary appearance of a new taxon (e.g., species, genus, family) in the fossil record. It marks the beginning of that lineage's existence." },
+                { q: "Explain the term 'extinction' in the context of evolution.", a: "Extinction refers to the termination or disappearance of a taxon. It marks the end of that lineage's existence. Mass extinctions are events where a large number of taxa go extinct in a relatively short geological time." },
+                { q: "What is a cladogram used for in biology?", a: "A cladogram is a branching diagram that illustrates the evolutionary relationships (phylogeny) among a group of organisms. It shows how species or groups are related by depicting shared derived characteristics (synapomorphies)." },
+                { q: "What is the difference between homologous and analogous structures? Give an example of each.", a: "Homologous structures are similar structures in different species that were inherited from a common ancestor (e.g., the forelimb bones of humans, bats, whales, and birds). Analogous structures are structures in different species that have a similar function but evolved independently, not from a common ancestor, often due to similar environmental pressures (e.g., the wings of birds and insects)." },
+                { q: "What morphological features would you look for to rank skulls based on their relatedness to a human skull?", a: "Features include: \n1. Braincase size (larger in humans). \n2. Prognathism (degree of facial projection; less in humans). \n3. Presence/size of brow ridge (reduced in humans). \n4. Position of foramen magnum (more central/anterior in humans, indicating bipedalism). \n5. Size and shape of canines (smaller in humans). \n6. Presence of a chin (unique to modern humans)." }
+            ],
+            "Chapter 13: Virginia Geology": [
+                { q: "Name the geologic provinces of Virginia from east to west.", a: "1. Coastal Plain \n2. Piedmont \n3. Blue Ridge \n4. Valley and Ridge \n5. Appalachian Plateau." },
+                { q: "Describe the general location of the Coastal Plain in Virginia.", a: "The easternmost province, characterized by flat or gently sloping terrain, composed of young, unconsolidated sediments." },
+                { q: "Describe the general location of the Piedmont in Virginia.", a: "Located west of the Coastal Plain (separated by the Fall Line), characterized by rolling hills and underlain by ancient igneous and metamorphic rocks. Contains Mesozoic basins." },
+                { q: "Describe the general location of the Blue Ridge in Virginia.", a: "A narrow, mountainous province west of the Piedmont, containing the highest elevations in Virginia, composed of ancient metamorphic and igneous rocks." },
+                { q: "Describe the general location of the Valley and Ridge in Virginia.", a: "West of the Blue Ridge, characterized by long, parallel ridges and valleys, formed by folded and faulted Paleozoic sedimentary rocks." },
+                { q: "Describe the general location of the Appalachian Plateau in Virginia.", a: "The westernmost province, characterized by elevated, relatively flat-lying sedimentary rocks that have been dissected by streams." },
+                { q: "What is the Culpeper Basin and where is it generally located (geologically)?", a: "The Culpeper Basin is one of the Mesozoic rift basins (specifically, a Newark Supergroup basin) located within the Piedmont province of Virginia. These basins formed during the rifting of Pangea in the Triassic and Jurassic periods and are filled with terrestrial sedimentary rocks and igneous intrusions/extrusions." },
+                { q: "What is the name of the primary orogeny that formed the Appalachian Mountains?", a: "The Alleghanian Orogeny (also known as the Appalachian Orogeny), which occurred during the late Paleozoic Era (Pennsylvanian-Permian) due to the collision of ancestral North America (Laurussia) with Gondwana to form Pangea." }
+            ],
+            "Geologic Timescale (Triassic to Recent)": [
+                { q: "The Geologic Timescale is hierarchical. What Era follows the Paleozoic Era and includes the Triassic, Jurassic, and Cretaceous Periods?", a: "The Mesozoic Era." },
+                { q: "Which Period is the earliest (oldest) of the Mesozoic Era?", a: "Triassic Period." },
+                { q: "Which Period of the Mesozoic Era is known for large dinosaurs and the first birds?", a: "Jurassic Period." },
+                { q: "Which Period is the latest (youngest) of the Mesozoic Era and ended with a major extinction event?", a: "Cretaceous Period." },
+                { q: "What Era follows the Mesozoic Era and continues to the present day?", a: "The Cenozoic Era." },
+                { q: "What are the three Periods of the Cenozoic Era, from oldest to youngest?", a: "Paleogene, Neogene, and Quaternary." },
+                { q: "List the Epochs of the Paleogene Period from oldest to youngest.", a: "Paleocene, Eocene, Oligocene." },
+                { q: "List the Epochs of the Neogene Period from oldest to youngest.", a: "Miocene, Pliocene." },
+                { q: "List the Epochs of the Quaternary Period from oldest to youngest.", a: "Pleistocene, Holocene. (The Holocene is the current epoch)." },
+                { q: "What important note is given for ALL drawings on the exam?", a: "ALL DRAWINGS NEED A SCALE." }
+            ]
+        };
+
+        // --- DOM Elements ---
+        const chapterSelect = document.getElementById('chapter-select');
+        const flashcardContainer = document.getElementById('flashcard-container');
+        const flashcardElement = document.getElementById('flashcard');
+        const questionElement = document.getElementById('flashcard-question');
+        const answerElement = document.getElementById('flashcard-answer');
+        const prevButton = document.getElementById('prev-card');
+        const flipButton = document.getElementById('flip-card');
+        const nextButton = document.getElementById('next-card');
+        const currentCardNumberElement = document.getElementById('current-card-number');
+        const totalCardsNumberElement = document.getElementById('total-cards-number');
+        const progressBarElement = document.getElementById('progress-bar');
+        const flashcardArea = document.getElementById('flashcard-area');
+        const noCardsMessage = document.getElementById('no-cards-message');
+        const controls = document.getElementById('controls');
+        const cardNavInfo = document.getElementById('card-navigation-info');
+        const progressBarContainer = document.querySelector('.progress-bar-container');
+
+
+        // --- State Variables ---
+        let currentChapter = "";
+        let currentCardIndex = 0;
+        let currentCards = [];
+
+        // --- Functions ---
+
+        // Populate chapter select dropdown
+        function populateChapterSelect() {
+            Object.keys(flashcardData).forEach(chapter => {
+                const option = document.createElement('option');
+                option.value = chapter;
+                option.textContent = chapter;
+                chapterSelect.appendChild(option);
+            });
+        }
+
+        // Load cards for selected chapter
+        function loadChapterCards() {
+            currentChapter = chapterSelect.value;
+            if (currentChapter && flashcardData[currentChapter]) {
+                currentCards = flashcardData[currentChapter];
+                currentCardIndex = 0;
+                if (currentCards.length > 0) {
+                    displayCard();
+                    flashcardArea.classList.remove('hidden');
+                    noCardsMessage.classList.add('hidden');
+                    controls.style.display = 'flex'; // Show controls
+                    cardNavInfo.style.display = 'block';
+                    progressBarContainer.style.display = 'block';
+                } else {
+                    showNoCardsMessage();
+                }
+            } else {
+                showNoCardsMessage();
+            }
+            updateProgress();
+        }
+
+        function showNoCardsMessage() {
+            questionElement.textContent = "Select a chapter to begin or no cards available.";
+            answerElement.textContent = "";
+            flashcardElement.classList.remove('is-flipped');
+            currentCardNumberElement.textContent = "0";
+            totalCardsNumberElement.textContent = "0";
+            // Hide interactive elements if no cards
+            flashcardArea.classList.remove('hidden'); // Keep area visible for message
+            flashcardContainer.classList.add('hidden'); // Hide card itself
+            noCardsMessage.classList.remove('hidden'); // Show message
+            controls.style.display = 'none'; // Hide controls
+            cardNavInfo.style.display = 'none';
+            progressBarContainer.style.display = 'none';
+        }
+
+
+        // Display current card
+        function displayCard() {
+            if (currentCards.length === 0 || currentCardIndex < 0 || currentCardIndex >= currentCards.length) {
+                showNoCardsMessage();
+                updateProgress(); // Update progress even if no cards (to show 0/0)
+                return;
+            }
+
+            flashcardContainer.classList.remove('hidden');
+            noCardsMessage.classList.add('hidden');
+            controls.style.display = 'flex';
+            cardNavInfo.style.display = 'block';
+            progressBarContainer.style.display = 'block';
+
+
+            const card = currentCards[currentCardIndex];
+            questionElement.innerHTML = `<span class="flashcard-content-title">Question:</span><br>${card.q}`;
+            answerElement.innerHTML = `<span class="flashcard-content-title">Answer:</span><br><span class="flashcard-content-answer">${card.a}</span>`;
+            flashcardElement.classList.remove('is-flipped'); // Show front first
+            updateNavigation();
+            updateProgress();
+        }
+
+        // Flip card
+        function flipCard() {
+            if (currentCards.length > 0) {
+                flashcardElement.classList.toggle('is-flipped');
+            }
+        }
+
+        // Show previous card
+        function prevCard() {
+            if (currentCardIndex > 0) {
+                currentCardIndex--;
+                displayCard();
+            }
+        }
+
+        // Show next card
+        function nextCard() {
+            if (currentCardIndex < currentCards.length - 1) {
+                currentCardIndex++;
+                displayCard();
+            }
+        }
+
+        // Update navigation buttons and card count
+        function updateNavigation() {
+            currentCardNumberElement.textContent = currentCards.length > 0 ? currentCardIndex + 1 : 0;
+            totalCardsNumberElement.textContent = currentCards.length;
+
+            prevButton.disabled = currentCardIndex === 0;
+            nextButton.disabled = currentCardIndex === currentCards.length - 1 || currentCards.length === 0;
+            flipButton.disabled = currentCards.length === 0;
+
+            if (prevButton.disabled) {
+                prevButton.classList.add('opacity-50', 'cursor-not-allowed');
+            } else {
+                prevButton.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+            if (nextButton.disabled) {
+                nextButton.classList.add('opacity-50', 'cursor-not-allowed');
+            } else {
+                nextButton.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+             if (flipButton.disabled) {
+                flipButton.classList.add('opacity-50', 'cursor-not-allowed');
+            } else {
+                flipButton.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+        }
+
+        // Update progress bar
+        function updateProgress() {
+            if (currentCards.length > 0) {
+                const progressPercentage = ((currentCardIndex + 1) / currentCards.length) * 100;
+                progressBarElement.style.width = `${progressPercentage}%`;
+            } else {
+                progressBarElement.style.width = '0%';
+            }
+             updateNavigation(); // Also update nav buttons as progress changes
+        }
+
+
+        // --- Event Listeners ---
+        chapterSelect.addEventListener('change', loadChapterCards);
+        flipButton.addEventListener('click', flipCard);
+        flashcardElement.addEventListener('click', flipCard); // Allow flipping by clicking card
+        prevButton.addEventListener('click', prevCard);
+        nextButton.addEventListener('click', nextCard);
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (event) => {
+            if (currentCards.length === 0) return; // No actions if no cards
+
+            if (event.key === 'ArrowLeft') {
+                if (!prevButton.disabled) prevCard();
+            } else if (event.key === 'ArrowRight') {
+                 if (!nextButton.disabled) nextCard();
+            } else if (event.key === ' ' || event.key === 'Enter') { // Space or Enter to flip
+                if (!flipButton.disabled) {
+                    event.preventDefault(); // Prevent space from scrolling page
+                    flipCard();
+                }
+            }
+        });
+
+        // --- Initial Setup ---
+        populateChapterSelect();
+        showNoCardsMessage(); // Initially show the message
+        updateProgress(); // Initialize progress bar and button states
+
+    </script>
+</body>
+</html>
