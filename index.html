@@ -2,15 +2,18 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Adam C Bloom</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=Inter:wght@400;500&display=swap');
+
         :root {
-            --primary: #2C5282;
-            --text: #2D3748;
-            --background: #0f172a;
-            --accent: #4299E1;
-            --glow: #60a5fa;
+            --bg: #050718;
+            --accent: #74b0ff;
+            --accent-2: #ff9adb;
+            --panel: rgba(7, 12, 25, 0.6);
+            --text-strong: #f8fafc;
+            --text-soft: rgba(248, 250, 252, 0.72);
         }
 
         * {
@@ -19,182 +22,416 @@
             box-sizing: border-box;
         }
 
+        html, body {
+            height: 100%;
+        }
+
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-            line-height: 1.6;
-            color: #fff;
-            background: var(--background);
+            font-family: 'Space Grotesk', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: radial-gradient(circle at 20% 20%, #142045 0%, var(--bg) 54%, #030510 100%);
+            color: var(--text-strong);
+            overflow: hidden;
+            position: relative;
+            letter-spacing: 0.01em;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: -30vh;
+            background:
+                radial-gradient(circle at 15% 25%, rgba(116, 176, 255, 0.18), transparent 65%),
+                radial-gradient(circle at 80% 75%, rgba(255, 154, 244, 0.12), transparent 60%),
+                radial-gradient(circle at 50% 10%, rgba(120, 241, 214, 0.08), transparent 65%);
+            filter: blur(40px);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        #bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        #bg canvas {
+            width: 100% !important;
+            height: 100% !important;
+            display: block;
+            opacity: 0;
+            animation: fadeCanvas 1.5s ease forwards 0.4s;
+        }
+
+        .overlay {
+            position: relative;
+            z-index: 2;
             min-height: 100vh;
             display: flex;
             align-items: center;
-            overflow: hidden;
-            perspective: 1000px;
+            justify-content: center;
+            padding: clamp(2.5rem, 6vw, 5.5rem);
         }
 
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 2rem;
+        .panel {
             position: relative;
-            text-align: center;
-            z-index: 2;
-            backdrop-filter: blur(10px);
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transform-style: preserve-3d;
-            transition: transform 0.3s ease;
+            padding: clamp(2.75rem, 7vw, 4.5rem);
+            max-width: 620px;
+            width: 100%;
+            border-radius: 36px;
+            background: var(--panel);
+            backdrop-filter: blur(26px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow:
+                0 40px 120px rgba(8, 12, 26, 0.55),
+                inset 0 0 0 0.6px rgba(255, 255, 255, 0.12);
+            overflow: hidden;
+        }
+
+        .panel::before {
+            content: '';
+            position: absolute;
+            inset: -40% -20% 40% -20%;
+            background: linear-gradient(120deg, rgba(116, 176, 255, 0.3) 0%, rgba(120, 241, 214, 0.2) 45%, rgba(255, 154, 244, 0.25) 100%);
+            opacity: 0.45;
+            transform: rotate(8deg);
+            filter: blur(40px);
+            animation: drift 18s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        .panel::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.08), transparent 60%);
+            mix-blend-mode: screen;
+            opacity: 0.8;
+            pointer-events: none;
+        }
+
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-soft);
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            font-size: 0.72rem;
+            padding: 0.55rem 1.1rem;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            backdrop-filter: blur(12px);
+            mix-blend-mode: lighten;
+        }
+
+        .tag::before {
+            content: '';
+            width: 0.45rem;
+            height: 0.45rem;
+            border-radius: 50%;
+            background: linear-gradient(120deg, var(--accent), var(--accent-2));
+            box-shadow: 0 0 12px rgba(116, 176, 255, 0.6);
         }
 
         h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1rem;
-            color: #fff;
-            font-weight: 700;
-            text-shadow: 0 0 10px var(--glow);
-            letter-spacing: -1px;
-            animation: glow 3s ease-in-out infinite;
+            font-size: clamp(2.8rem, 6vw, 4.4rem);
+            font-weight: 600;
+            line-height: 1.05;
+            letter-spacing: -0.015em;
+            margin-top: clamp(1.6rem, 3vw, 2.3rem);
+            text-shadow: 0 20px 45px rgba(20, 66, 171, 0.45);
         }
 
-        .lead {
-            font-size: 1.35rem;
-            color: rgba(255, 255, 255, 0.8);
-            margin-bottom: 2rem;
-            font-weight: 400;
+        p {
+            margin-top: clamp(1.2rem, 2.5vw, 1.8rem);
+            font-size: clamp(1.05rem, 2.35vw, 1.3rem);
+            color: var(--text-soft);
+            max-width: 36ch;
+            margin-inline: auto;
             line-height: 1.8;
         }
 
-        @keyframes glow {
-            0%, 100% { text-shadow: 0 0 10px var(--glow); }
-            50% { text-shadow: 0 0 20px var(--glow), 0 0 30px var(--glow); }
+        .meta {
+            margin-top: clamp(2rem, 3.5vw, 2.8rem);
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            color: rgba(248, 250, 252, 0.58);
+            font-size: 0.9rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
         }
 
-        .gradient-sphere {
-            position: fixed;
-            width: 800px;
-            height: 800px;
+        .meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .meta span::before {
+            content: '';
+            width: 0.35rem;
+            height: 0.35rem;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(96,165,250,0.15) 0%, rgba(59,130,246,0.05) 50%, transparent 70%);
-            filter: blur(40px);
-            animation: sphereFloat 20s ease-in-out infinite;
+            background: rgba(248, 250, 252, 0.35);
+            box-shadow: 0 0 6px rgba(248, 250, 252, 0.3);
         }
 
-        .grid {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image:
-                linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
-            background-size: 100px 100px;
-            perspective: 1000px;
-            transform-style: preserve-3d;
-            animation: gridMove 15s linear infinite;
+        @keyframes drift {
+            0%, 100% {
+                transform: rotate(8deg) translateY(-2%);
+            }
+            50% {
+                transform: rotate(5deg) translateY(4%);
+            }
         }
 
-        @keyframes gridMove {
-            0% { transform: translate3d(0, 0, 0) rotate3d(1, 0, 0, 75deg); }
-            100% { transform: translate3d(0, 0, 100px) rotate3d(1, 0, 0, 75deg); }
+        @keyframes fadeCanvas {
+            to {
+                opacity: 1;
+            }
         }
 
-        @keyframes sphereFloat {
-            0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
-            50% { transform: translate3d(-100px, -50px, 0) scale(1.1); }
+        @media (max-width: 640px) {
+            .panel {
+                border-radius: 28px;
+                padding: clamp(2.2rem, 9vw, 3rem);
+            }
+
+            h1 {
+                font-size: clamp(2.4rem, 9vw, 3rem);
+            }
         }
 
-        .cursor {
-            width: 20px;
-            height: 20px;
-            border: 2px solid rgba(255,255,255,0.5);
-            border-radius: 50%;
-            position: fixed;
-            pointer-events: none;
-            transition: all 0.1s ease;
-            z-index: 9999;
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
         }
-
     </style>
 </head>
 <body>
-    <div class="grid"></div>
-    <div class="gradient-sphere" style="top: -400px; left: -400px;"></div>
-    <div class="gradient-sphere" style="bottom: -400px; right: -400px;"></div>
-
-    <div class="cursor" id="cursor"></div>
-
-    <main role="main" class="container">
-        <div class="starter-template">
-            <h1>Hello there</h1>
-            <p class="lead">This is a placeholder for now.<br> I hope you have a great day!</p>
+    <div id="bg" aria-hidden="true"></div>
+    <div class="overlay">
+        <div class="panel">
+            <h1>Hello There</h1>
+            <p>This is a placeholder for now. I hope you have a great day!</p>
         </div>
-    </main>
+    </div>
 
-    <script>
-        // Custom cursor
-        const cursor = document.getElementById('cursor');
-        // Debounce mouse move events
-        let mouseTimeout;
-        document.addEventListener('mousemove', (e) => {
-            if (mouseTimeout) return;
+    <script type="module">
+        import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.161/build/three.module.js';
 
-            mouseTimeout = setTimeout(() => {
-                const cursor = document.getElementById('cursor');
-                cursor.style.left = e.clientX - 10 + 'px';
-                cursor.style.top = e.clientY - 10 + 'px';
+        const root = document.getElementById('bg');
 
-                const container = document.querySelector('.container');
-                const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
-                const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
-                container.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x050912, 0.055);
 
-                mouseTimeout = null;
-            }, 16); // Approximately 60fps
-        });
+        const camera = new THREE.PerspectiveCamera(42, window.innerWidth / window.innerHeight, 0.1, 60);
+        camera.position.set(0, 0, 14);
 
-        // 3D tilt effect
-        document.addEventListener('mousemove', (e) => {
-            const container = document.querySelector('.container');
-            const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
-            const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
-            container.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
-        });
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.outputColorSpace = THREE.SRGBColorSpace;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.25;
+        renderer.physicallyCorrectLights = true;
+        root.appendChild(renderer.domElement);
 
-        const MAX_PARTICLES = 20;
-        let particleCount = 0;
+        const hemisphere = new THREE.HemisphereLight(0x8fb9ff, 0x050913, 0.6);
+        scene.add(hemisphere);
 
-        function createParticle() {
-            if (particleCount >= MAX_PARTICLES) return;
+        const pointLight1 = new THREE.PointLight(0x88b7ff, 12, 40);
+        pointLight1.position.set(8, 6, 10);
+        scene.add(pointLight1);
 
-            particleCount++;
-            const particle = document.createElement('div');
-            particle.style.cssText = `
-                position: fixed;
-                width: 2px;
-                height: 2px;
-                background: #fff;
-                border-radius: 50%;
-                left: ${Math.random() * 100}vw;
-                top: ${Math.random() * 100}vh;
-                opacity: ${Math.random() * 0.5};
-                transform: translate3d(0, 0, 0);
-                transition: transform 3s ease, opacity 3s ease;
-            `;
-            document.body.appendChild(particle);
+        const pointLight2 = new THREE.PointLight(0xff8edc, 8, 35);
+        pointLight2.position.set(-6, -4, 12);
+        scene.add(pointLight2);
 
-            requestAnimationFrame(() => {
-                particle.style.transform = `translate3d(${Math.random() * 100 - 50}px, ${Math.random() * 100 - 50}px, 0)`;
-                particle.style.opacity = 0;
+        const palette = [0x88b9ff, 0xff9adb, 0x78f1d5, 0xf8c27a];
+        const floatingGroup = new THREE.Group();
+        floatingGroup.position.z = -1.2;
+        scene.add(floatingGroup);
+
+        const randomInRange = (min, max) => Math.random() * (max - min) + min;
+
+        for (let i = 0; i < 18; i++) {
+            const radius = randomInRange(0.4, 1.1);
+            const geometry = new THREE.IcosahedronGeometry(radius, Math.random() > 0.6 ? 1 : 0);
+            const color = palette[Math.floor(Math.random() * palette.length)];
+            const material = new THREE.MeshPhysicalMaterial({
+                color,
+                emissive: color,
+                emissiveIntensity: 0.25,
+                roughness: 0.05,
+                metalness: 0.25,
+                transmission: 0.65,
+                opacity: 0.9,
+                transparent: true,
+                clearcoat: 1,
+                clearcoatRoughness: 0.08,
+                thickness: 1.4
             });
 
-            setTimeout(() => {
-                document.body.removeChild(particle);
-                particleCount--;
-            }, 3000);
+            const mesh = new THREE.Mesh(geometry, material);
+            mesh.position.set(randomInRange(-5, 5), randomInRange(-3.5, 3.5), randomInRange(-4, 4));
+            mesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
+            mesh.userData = {
+                base: mesh.position.clone(),
+                offset: Math.random() * Math.PI * 2,
+                amp: randomInRange(0.2, 0.7),
+                speed: randomInRange(0.3, 0.75)
+            };
+            floatingGroup.add(mesh);
         }
 
-        setInterval(createParticle, 500);
+        const ringGeometry = new THREE.TorusKnotGeometry(2.4, 0.12, 260, 18, 2, 3);
+        const ringMaterial = new THREE.MeshStandardMaterial({
+            color: 0x3954ff,
+            metalness: 0.8,
+            roughness: 0.2,
+            emissive: 0x2c3bf5,
+            emissiveIntensity: 0.4,
+            transparent: true,
+            opacity: 0.42
+        });
+        const ring = new THREE.Mesh(ringGeometry, ringMaterial);
+        ring.rotation.x = Math.PI / 2;
+        ring.userData = { isRing: true };
+        floatingGroup.add(ring);
+
+        const starGeometry = new THREE.BufferGeometry();
+        const starCount = 1200;
+        const coords = new Float32Array(starCount * 3);
+        const sizes = new Float32Array(starCount);
+
+        for (let i = 0; i < starCount; i++) {
+            const i3 = i * 3;
+            const radius = 18 * Math.pow(Math.random(), 0.5) + 4;
+            const theta = Math.random() * Math.PI * 2;
+            const phi = Math.acos(2 * Math.random() - 1);
+            coords[i3] = radius * Math.sin(phi) * Math.cos(theta);
+            coords[i3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
+            coords[i3 + 2] = radius * Math.cos(phi);
+            sizes[i] = Math.random() * 1.2 + 0.4;
+        }
+
+        starGeometry.setAttribute('position', new THREE.BufferAttribute(coords, 3));
+        starGeometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+
+        const starMaterial = new THREE.PointsMaterial({
+            size: 0.08,
+            color: 0xffffff,
+            transparent: true,
+            opacity: 0.65,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false
+        });
+
+        const starField = new THREE.Points(starGeometry, starMaterial);
+        scene.add(starField);
+
+        const comet = new THREE.Group();
+        const cometTrail = new THREE.CylinderGeometry(0, 0.06, 4, 16, 1, true);
+        const cometTrailMaterial = new THREE.MeshBasicMaterial({
+            color: 0xffffff,
+            transparent: true,
+            opacity: 0.22,
+            blending: THREE.AdditiveBlending,
+            side: THREE.DoubleSide
+        });
+        const trail = new THREE.Mesh(cometTrail, cometTrailMaterial);
+        trail.position.y = 2;
+        trail.rotation.x = Math.PI;
+        comet.add(trail);
+
+        const cometCore = new THREE.Mesh(
+            new THREE.SphereGeometry(0.18, 24, 24),
+            new THREE.MeshBasicMaterial({
+                color: 0xffffff,
+                transparent: true,
+                opacity: 0.55,
+                blending: THREE.AdditiveBlending
+            })
+        );
+        comet.add(cometCore);
+        scene.add(comet);
+
+        const pointer = new THREE.Vector2(0, 0);
+        const pointerTarget = new THREE.Vector2(0, 0);
+        const pointerLerp = 0.08;
+
+        window.addEventListener('pointermove', (event) => {
+            pointerTarget.x = (event.clientX / window.innerWidth) * 2 - 1;
+            pointerTarget.y = (event.clientY / window.innerHeight) * 2 - 1;
+        });
+
+        const clock = new THREE.Clock();
+        const tmpVec1 = new THREE.Vector3();
+        const tmpVec2 = new THREE.Vector3();
+        const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+        let motionFactor = reducedMotionQuery.matches ? 0.25 : 1;
+
+        reducedMotionQuery.addEventListener('change', (event) => {
+            motionFactor = event.matches ? 0.25 : 1;
+        });
+
+        function handleResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        window.addEventListener('resize', handleResize);
+
+        function animate() {
+            const elapsed = clock.getElapsedTime();
+            pointer.lerp(pointerTarget, pointerLerp);
+
+            floatingGroup.rotation.x += ((-pointer.y * 0.35) - floatingGroup.rotation.x) * 0.035;
+            floatingGroup.rotation.y += ((pointer.x * 0.35) - floatingGroup.rotation.y) * 0.035;
+
+            starField.rotation.y -= 0.00045 * motionFactor;
+            starField.rotation.x = Math.sin(elapsed * 0.02) * 0.02 * motionFactor;
+
+            floatingGroup.children.forEach((mesh) => {
+                if (mesh.userData && mesh.userData.base) {
+                    mesh.rotation.x += (0.0025 + mesh.userData.speed * 0.003) * motionFactor;
+                    mesh.rotation.y += (0.003 + mesh.userData.speed * 0.0025) * motionFactor;
+                    mesh.position.y = mesh.userData.base.y + Math.sin(elapsed * mesh.userData.speed * 1.4 + mesh.userData.offset) * mesh.userData.amp * motionFactor;
+                    mesh.position.x = mesh.userData.base.x + Math.cos(elapsed * mesh.userData.speed * 1.1 + mesh.userData.offset) * mesh.userData.amp * 0.35 * motionFactor;
+                }
+            });
+
+            ring.rotation.z += 0.0009 * motionFactor;
+            ring.rotation.x = Math.PI / 2 + Math.sin(elapsed * 0.18) * 0.08 * motionFactor;
+
+            tmpVec1.set(pointer.x * 5 + 6, pointer.y * 4 + 5, 10);
+            pointLight1.position.lerp(tmpVec1, 0.05);
+
+            tmpVec2.set(-pointer.x * 6 - 4, -pointer.y * 4 - 3, 12);
+            pointLight2.position.lerp(tmpVec2, 0.05);
+
+            comet.position.x += ((pointer.x * 3.6) - comet.position.x) * 0.12;
+            comet.position.y += ((pointer.y * 2.6) - comet.position.y) * 0.12;
+            comet.position.z = 1.6;
+            comet.lookAt(0, 0, -4);
+
+            renderer.render(scene, camera);
+            requestAnimationFrame(animate);
+        }
+
+        animate();
     </script>
 </body>
 </html>
