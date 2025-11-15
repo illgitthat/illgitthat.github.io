@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirect</title>
+    <script>
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const targetUrl = urlParams.get('url');
+
+            if (!targetUrl) {
+                document.body.innerHTML = 'Error: No target URL specified';
+                return;
+            }
+
+            // Create a JSON object from the parameters
+            const jsonData = {};
+            urlParams.forEach((value, key) => {
+                if (key !== 'url') {
+                    if (value === 'true') jsonData[key] = true;
+                    else if (value === 'false') jsonData[key] = false;
+                    else if (!isNaN(value)) jsonData[key] = Number(value);
+                    else jsonData[key] = value;
+                }
+            });
+
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', targetUrl, true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.send(JSON.stringify(jsonData));
+
+            xhr.onload = function() {
+                document.body.innerHTML = xhr.responseText;
+            };
+        }
+    </script>
+</head>
+<body>
+    <p>Processing...</p>
+</body>
+</html>
