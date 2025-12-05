@@ -29,6 +29,14 @@ let paddles = {
 };
 let scores = { left: 0, right: 0 };
 let scoreboard = { canvas: null, ctx: null, texture: null, mesh: null };
+const backgroundMusic = {
+    audio: null,
+    targetVolume: 0.25,
+    fadeDuration: 900,
+    sliderEl: null,
+    sliderValueEl: null,
+    retryIntervalId: null
+};
 
 const handState = {
     left: { detected: false, isPinching: false, world: new THREE.Vector3() },
@@ -36,6 +44,143 @@ const handState = {
 };
 
 const clamp = (v, min, max) => Math.min(Math.max(v, min), max);
+
+const setVolume = value => {
+    const v = clamp(value, 0, 1);
+    backgroundMusic.targetVolume = v;
+    if (backgroundMusic.audio) {
+        backgroundMusic.audio.volume = v;
+        backgroundMusic.audio.muted = v === 0;
+    }
+    if (backgroundMusic.sliderEl) backgroundMusic.sliderEl.value = v;
+    if (backgroundMusic.sliderValueEl) backgroundMusic.sliderValueEl.textContent = `${Math.round(v * 100)}%`;
+};
+
+const ensureMusicLoaded = () => {
+    if (backgroundMusic.audio) return;
+    const audio = new Audio('assets/neoncollision.mp3');
+    audio.loop = true;
+    audio.volume = backgroundMusic.targetVolume;
+    audio.preload = 'auto';
+    backgroundMusic.audio = audio;
+};
+
+const fadeVolume = (to, duration = 1200) => {
+    if (!backgroundMusic.audio) return;
+    const audio = backgroundMusic.audio;
+    const from = audio.volume;
+    const delta = to - from;
+    const startTime = performance.now();
+
+    const step = now => {
+        const t = clamp((now - startTime) / duration, 0, 1);
+        audio.volume = from + delta * t;
+        if (t < 1) requestAnimationFrame(step);
+    };
+
+    requestAnimationFrame(step);
+};
+
+const startBackgroundMusic = () => {
+    ensureMusicLoaded();
+    const audio = backgroundMusic.audio;
+    if (!audio) return;
+
+    if (!audio.paused) {
+        fadeVolume(backgroundMusic.targetVolume, 500);
+        return;
+    }
+
+    audio.muted = false;
+    audio.volume = Math.min(audio.volume, 0.08); // quick onset so it is audible
+    const playPromise = audio.play();
+    if (playPromise && typeof playPromise.then === 'function') {
+        playPromise.then(() => fadeVolume(backgroundMusic.targetVolume, backgroundMusic.fadeDuration))
+            .catch(err => console.warn('Music playback blocked until user interacts.', err));
+    } else {
+        fadeVolume(backgroundMusic.targetVolume, backgroundMusic.fadeDuration);
+    }
+};
+
+const stopBackgroundMusic = () => {
+    if (!backgroundMusic.audio) return;
+    fadeVolume(0, 800);
+    setTimeout(() => backgroundMusic.audio && backgroundMusic.audio.pause(), 820);
+};
+
+const primeAutoplayAttempt = () => {
+    ensureMusicLoaded();
+    const audio = backgroundMusic.audio;
+    if (!audio) return;
+
+    audio.muted = true;
+    audio.volume = 0;
+    const attempt = audio.play();
+    if (attempt && typeof attempt.then === 'function') {
+        attempt.then(() => {
+            audio.pause();
+            audio.currentTime = 0;
+            audio.muted = false;
+            audio.volume = backgroundMusic.targetVolume;
+        }).catch(() => {
+            audio.muted = false;
+            audio.volume = backgroundMusic.targetVolume;
+        });
+    }
+};
+
+const kickAutoplay = () => {
+    // Try immediately
+    startBackgroundMusic();
+
+    // Keep retrying periodically until it plays
+    if (backgroundMusic.retryIntervalId) return;
+    backgroundMusic.retryIntervalId = setInterval(() => {
+        startBackgroundMusic();
+        if (backgroundMusic.audio && !backgroundMusic.audio.paused) {
+            clearInterval(backgroundMusic.retryIntervalId);
+            backgroundMusic.retryIntervalId = null;
+        }
+    }, 2500);
+};
+
+const setupBackgroundMusic = () => {
+    ensureMusicLoaded();
+    backgroundMusic.sliderEl = document.getElementById('volume-slider');
+    backgroundMusic.sliderValueEl = document.getElementById('volume-value');
+
+    setVolume(backgroundMusic.targetVolume);
+    primeAutoplayAttempt();
+    kickAutoplay();
+
+    if (backgroundMusic.sliderEl) {
+        backgroundMusic.sliderEl.addEventListener('input', e => {
+            const v = parseFloat(e.target.value);
+            setVolume(v);
+            if (backgroundMusic.audio && !backgroundMusic.audio.paused) {
+                backgroundMusic.audio.volume = v;
+            }
+        });
+    }
+
+    const unlock = () => {
+        kickAutoplay();
+    };
+
+    ['pointerdown', 'pointermove', 'touchstart', 'keydown'].forEach(evt => {
+        window.addEventListener(evt, unlock, { passive: true });
+    });
+
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            stopBackgroundMusic();
+        } else {
+            kickAutoplay();
+        }
+    });
+
+    kickAutoplay();
+};
 
 const normalizedToWorld = (x, y) => {
     const mirroredX = 1 - x;
@@ -610,6 +755,7 @@ const initCamera = async () => {
 const init = async () => {
     initThree();
     initPhysics();
+    setupBackgroundMusic();
     updateScore();
     setStatus('Move your hand to push the puck. Aim for the glowing goal slots.');
     await initCamera();

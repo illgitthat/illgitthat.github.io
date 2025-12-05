@@ -33,6 +33,12 @@
     </div>
   </div>
 
+  <div id="audio-controls">
+    <label for="volume-slider">Music</label>
+    <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="0.25" aria-label="Music volume">
+    <span id="volume-value">25%</span>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
   <script type="module" src="main.js"></script>
