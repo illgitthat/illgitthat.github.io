@@ -183,6 +183,69 @@
             box-shadow: 0 0 6px rgba(248, 250, 252, 0.3);
         }
 
+        .cta {
+            margin-top: clamp(1.8rem, 3vw, 2.6rem);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.9rem 1.4rem;
+            border-radius: 999px;
+            border: 1.5px solid rgba(255, 255, 255, 0.22);
+            background: linear-gradient(120deg, rgba(116, 176, 255, 0.25), rgba(255, 154, 219, 0.22));
+            color: var(--text-strong);
+            text-decoration: none;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            box-shadow: 0 0 24px rgba(116, 176, 255, 0.35), 0 8px 32px rgba(8, 12, 26, 0.65);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0));
+            opacity: 0;
+            transform: translateX(-40%);
+            transition: transform 220ms ease, opacity 220ms ease;
+        }
+
+        .cta:hover::before {
+            opacity: 1;
+            transform: translateX(40%);
+        }
+
+        .cta:hover {
+            box-shadow: 0 0 36px rgba(255, 154, 219, 0.35), 0 12px 40px rgba(8, 12, 26, 0.75);
+            transform: translateY(-1px);
+        }
+
+        .cta:active {
+            transform: translateY(0);
+        }
+
+        .cta:focus-visible {
+            outline: 2px solid rgba(255, 255, 255, 0.7);
+            outline-offset: 4px;
+        }
+
+        .cta.outside {
+            margin-top: clamp(1rem, 3vw, 1.6rem);
+            background: linear-gradient(135deg, #42e8e0, #ff7ad1);
+            border: none;
+            color: #0b0d24;
+            font-weight: 700;
+            box-shadow: 0 0 20px rgba(66, 232, 224, 0.5);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.27);
+        }
+
+        .cta.outside:hover {
+            box-shadow: 0 0 35px rgba(66, 232, 224, 0.7), 0 0 15px rgba(255, 122, 209, 0.5);
+            transform: translateY(-2px) scale(1.02);
+        }
+
         @keyframes drift {
             0%, 100% {
                 transform: rotate(8deg) translateY(-2%);
@@ -239,6 +302,9 @@
             <h1>Hello There</h1>
             <p>This is a placeholder for now. I hope you have a great day!</p>
         </div>
+        <a class="cta outside" href="./air2/" aria-label="Play Air Hockey">
+            Play Air Hockey!
+        </a>
     </div>
 
     <script type="module">
