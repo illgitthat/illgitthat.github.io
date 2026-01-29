@@ -1,2 +1,2 @@
 # illgitthat.github.io
-Github pages for adamcbloom.com (mostly just a playground)
+Cloudflare worker for adamcbloom.com (mostly just a playground)

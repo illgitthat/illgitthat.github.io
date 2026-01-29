@@ -1,0 +1,44 @@
+{
+    "name": "gentest",
+    "main": "src/index.ts",
+    "compatibility_date": "2025-01-24",
+    "workers_dev": true,
+    "routes": [
+        {
+            "pattern": "adamcbloom.com",
+            "custom_domain": true
+        }
+    ],
+    "assets": {
+        "directory": "./public",
+        "binding": "ASSETS",
+        "not_found_handling": "single-page-application",
+        "html_handling": "auto-trailing-slash",
+        "run_worker_first": true
+    },
+    "vars": {
+        "ENVIRONMENT": "production",
+        "CLOUDFLARE_ACCOUNT_ID": "5ce0d3512f15df9319e5de046f66cdf0"
+    },
+    "r2_buckets": [
+        {
+            "binding": "SCREENSHOTS",
+            "bucket_name": "illgitthat-screenshots",
+            "preview_bucket_name": "illgitthat-screenshots",
+            "remote": true
+        }
+    ],
+    "kv_namespaces": [
+        {
+            "binding": "SITES",
+            "id": "fcbfa05ea0a44cf7b395ed6a94600641",
+            "preview_id": "fcbfa05ea0a44cf7b395ed6a94600641"
+        }
+        // Uncomment to enable rate limiting:
+        // {
+        //     "binding": "RATE_LIMIT",
+        //     "id": "<your-kv-namespace-id>",
+        //     "preview_id": "<your-preview-kv-namespace-id>"
+        // }
+    ]
+}

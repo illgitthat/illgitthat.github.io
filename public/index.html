@@ -1,0 +1,752 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Adam Bloom</title>
+		<meta name="description" content="AI-powered website generator. Describe your idea, get a live site in seconds. Built by Adam Bloom." />
+		<meta name="theme-color" content="#09090b" />
+		<!-- Favicons -->
+		<link rel="icon" type="image/x-icon" href="/favicon.ico" />
+		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+		<link rel="manifest" href="/site.webmanifest" />
+		<!-- Preconnect to external resources -->
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link rel="dns-prefetch" href="https://api.cerebras.ai" />
+		<!-- Preload critical CSS -->
+		<link rel="preload" href="styles.css" as="style" />
+		<!-- Defer font loading -->
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" media="print" onload="this.media='all'" />
+		<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" /></noscript>
+		<link rel="stylesheet" href="styles.css" />
+	</head>
+	<body>
+		<!-- Ambient background -->
+		<div class="ambient" aria-hidden="true">
+			<div class="orb orb-1"></div>
+			<div class="orb orb-2"></div>
+			<div class="orb orb-3"></div>
+			<div class="grid-overlay"></div>
+		</div>
+
+		<main class="shell">
+			<nav class="nav">
+				<a href="/" class="logo-link">
+					<div class="logo">
+						<span class="logo-mark"></span>
+						<span class="logo-text">Adam Bloom</span>
+					</div>
+				</a>
+				<div class="nav-right">
+					<span class="status-indicator"></span>
+					<span class="badge">AI-Powered</span>
+				</div>
+			</nav>
+
+			<section class="hero">
+				<div class="headline">
+					<div class="tag">Proof of Concept</div>
+					<h1>Describe it.<br />I'll build it.</h1>
+					<p class="subtitle">
+						Full websites generated in ~10 seconds. No templates, no
+						constraints — just your idea to a live site. Welcome to
+						my playground.
+					</p>
+				</div>
+
+				<div class="hero-card">
+					<form class="form" id="brief-form">
+						<div class="form-header">
+							<label for="prompt">Your brief</label>
+							<button
+								class="surprise-btn"
+								type="button"
+								id="surprise-btn"
+							>
+								<svg
+									width="14"
+									height="14"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+								>
+									<path
+										d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"
+									/>
+								</svg>
+								Surprise me
+							</button>
+						</div>
+						<textarea
+							id="prompt"
+							name="prompt"
+							placeholder="A sleek portfolio for a product designer with dark mode, animated case study cards, and a contact form..."
+							rows="4"
+						></textarea>
+						<div class="quick-picks">
+							<span class="quick-picks-label">Quick picks:</span>
+							<button
+								class="chip"
+								type="button"
+								data-prompt="A luxury wellness brand site with soft gradients, testimonials, and a booking calendar."
+							>
+								Wellness
+							</button>
+							<button
+								class="chip"
+								type="button"
+								data-prompt="A bold SaaS homepage with product tour, animated metrics, and a pricing grid."
+							>
+								SaaS
+							</button>
+							<button
+								class="chip"
+								type="button"
+								data-prompt="A minimalist portfolio for a creative director, featuring case studies and a gallery."
+							>
+								Portfolio
+							</button>
+							<button
+								class="chip"
+								type="button"
+								data-prompt="An e-commerce landing page for premium headphones with 3D product views and specs comparison."
+							>
+								E-commerce
+							</button>
+						</div>
+						<div class="form-footer">
+							<button class="cta" type="submit" id="generate-btn">
+								<span class="cta-text">Generate Site</span>
+								<span class="cta-icon">
+									<svg
+										width="18"
+										height="18"
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="2.5"
+										stroke-linecap="round"
+									>
+										<path d="M5 12h14M12 5l7 7-7 7" />
+									</svg>
+								</span>
+							</button>
+						</div>
+						<div
+							class="status"
+							id="status-panel"
+							aria-live="polite"
+						>
+							<div class="status-content">
+								<span class="pulse"></span>
+								<div class="status-text-wrap">
+									<span id="status-text"
+										>Awaiting your brief.</span
+									>
+									<span class="status-step" id="status-step"
+										>Initialize build pipeline</span
+									>
+								</div>
+							</div>
+							<div class="status-progress" id="status-progress" hidden>
+								<div class="status-progress-bar" id="status-progress-bar"></div>
+							</div>
+							<div class="status-eta" id="status-eta" hidden></div>
+						</div>
+					</form>
+				</div>
+			</section>
+
+			<section class="preview" id="preview" hidden>
+				<div class="preview-header">
+					<div class="preview-title">
+						<span class="preview-dot"></span>
+						Live Preview
+					</div>
+					<div class="preview-actions">
+						<button class="action-btn" id="share-btn" type="button">
+							<svg
+								width="14"
+								height="14"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+							>
+								<path
+									d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"
+								/>
+								<path
+									d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"
+								/>
+							</svg>
+							Copy link
+						</button>
+						<a
+							class="action-btn"
+							id="preview-link"
+							href="#"
+							target="_blank"
+							rel="noopener"
+						>
+							<svg
+								width="14"
+								height="14"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+							>
+								<path
+									d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
+								/>
+								<polyline points="15,3 21,3 21,9" />
+								<line x1="10" y1="14" x2="21" y2="3" />
+							</svg>
+							Open
+						</a>
+					</div>
+				</div>
+				<div class="preview-container">
+					<div class="preview-placeholder" id="preview-placeholder">
+						<div class="placeholder-icon">
+							<svg
+								width="48"
+								height="48"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="1.5"
+							>
+								<rect
+									x="3"
+									y="3"
+									width="18"
+									height="18"
+									rx="2"
+								/>
+								<path d="M3 9h18" />
+								<circle cx="7.5" cy="6" r="1" />
+								<circle cx="10.5" cy="6" r="1" />
+							</svg>
+						</div>
+						<span>Your site will appear here</span>
+					</div>
+					<iframe
+						class="preview-frame"
+						id="preview-frame"
+						title="Generated site preview"
+						hidden
+					></iframe>
+				</div>
+			</section>
+
+			<section class="gallery" id="gallery">
+				<div class="section-header">
+					<div class="section-title">
+						<h2>Recent Generations</h2>
+						<p>Live examples from the last 24 hours</p>
+					</div>
+				</div>
+				<div class="gallery-grid" id="gallery-grid">
+					<div class="gallery-loading">
+						<div class="gallery-loading-spinner"></div>
+					</div>
+				</div>
+			</section>
+
+			<section class="cta-section">
+				<div class="cta-card">
+					<h2>Want a site built well — and by a human?</h2>
+					<p>
+						AI is great for demos, but real projects deserve real
+						attention. Let's build something together.
+					</p>
+					<a href="mailto:adamc.bloom@gmail.com" class="cta-contact">
+						<span>Get in touch</span>
+						<svg
+							width="18"
+							height="18"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+						>
+							<path d="M5 12h14M12 5l7 7-7 7" />
+						</svg>
+					</a>
+				</div>
+			</section>
+
+			<footer class="footer">
+				<div class="footer-left">
+					<span class="footer-brand">Adam Bloom</span>
+					<span class="footer-divider">·</span>
+					<a href="mailto:adamc.bloom@gmail.com" class="footer-link"
+						>Contact me</a
+					>
+				</div>
+				<div class="footer-links">
+					<a href="./air2/" class="footer-link"
+						>Air Hockey mini-game</a
+					>
+				</div>
+			</footer>
+		</main>
+
+		<script type="module">
+			// Lightweight interactive background with mouse parallax
+			const orbs = document.querySelectorAll(".orb");
+			let mouseX = 0,
+				mouseY = 0;
+			let currentX = 0,
+				currentY = 0;
+
+			document.addEventListener("mousemove", (e) => {
+				mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+				mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+			});
+
+			function animateOrbs() {
+				currentX += (mouseX - currentX) * 0.03;
+				currentY += (mouseY - currentY) * 0.03;
+
+				orbs.forEach((orb, i) => {
+					const depth = (i + 1) * 15;
+					const x = currentX * depth;
+					const y = currentY * depth;
+					orb.style.transform = `translate(${x}px, ${y}px)`;
+				});
+
+				requestAnimationFrame(animateOrbs);
+			}
+
+			// Only animate on non-touch devices
+			if (!("ontouchstart" in window)) {
+				animateOrbs();
+			}
+
+			// Form elements
+			const form = document.getElementById("brief-form");
+			const promptInput = document.getElementById("prompt");
+			const statusPanel = document.getElementById("status-panel");
+			const statusText = document.getElementById("status-text");
+			const statusStep = document.getElementById("status-step");
+			const previewFrame = document.getElementById("preview-frame");
+			const previewPlaceholder = document.getElementById(
+				"preview-placeholder",
+			);
+			const previewLink = document.getElementById("preview-link");
+			const shareBtn = document.getElementById("share-btn");
+			const generateButton = document.getElementById("generate-btn");
+			const chips = document.querySelectorAll("[data-prompt]");
+
+			let currentShareUrl = "";
+
+			// Steps with timing weights (higher = longer pause)
+			const steps = [
+				{ text: "Parsing your brief...", weight: 1 },
+				{ text: "Analyzing design requirements", weight: 1 },
+				{ text: "Selecting color palette & typography", weight: 1.5 },
+				{ text: "Structuring page layout", weight: 2 },
+				{ text: "Generating HTML markup", weight: 2.5 },
+				{ text: "Writing CSS styles", weight: 2.5 },
+				{ text: "Adding interactive elements", weight: 2 },
+				{ text: "Optimizing for responsiveness", weight: 1.5 },
+				{ text: "Final polish & validation", weight: 1 },
+				{ text: "Preparing preview...", weight: 1 },
+			];
+
+			const EXPECTED_TIME_MS = 18000; // 18 seconds expected
+			let stepTimer;
+			let progressTimer;
+			let buildStartTime;
+
+			const statusProgress = document.getElementById("status-progress");
+			const statusProgressBar = document.getElementById("status-progress-bar");
+			const statusEta = document.getElementById("status-eta");
+
+			function setStatus(message, step) {
+				statusText.textContent = message;
+				statusStep.textContent = step;
+				// Add subtle pulse animation on step change
+				statusStep.classList.remove('step-change');
+				void statusStep.offsetWidth; // Force reflow
+				statusStep.classList.add('step-change');
+			}
+
+			// Progress phrases that feel faster than counting seconds
+			const progressPhrases = [
+				"Warming up...",
+				"Making progress...",
+				"Looking good...",
+				"Getting there...",
+				"Almost ready...",
+				"Final touches..."
+			];
+
+			function updateProgress() {
+				const elapsed = Date.now() - buildStartTime;
+				// Ease-out curve: starts fast, slows down near the end
+				const linearProgress = Math.min(1, elapsed / EXPECTED_TIME_MS);
+				const easedProgress = 1 - Math.pow(1 - linearProgress, 2.5);
+				const displayProgress = Math.min(95, easedProgress * 95);
+				statusProgressBar.style.width = `${displayProgress}%`;
+
+				// Show encouraging phrase instead of countdown
+				const phraseIndex = Math.min(
+					progressPhrases.length - 1,
+					Math.floor(linearProgress * progressPhrases.length)
+				);
+				statusEta.textContent = progressPhrases[phraseIndex];
+			}
+
+			function startStatusCycle() {
+				let index = 0;
+				buildStartTime = Date.now();
+				const totalWeight = steps.reduce((sum, s) => sum + s.weight, 0);
+				const baseInterval = EXPECTED_TIME_MS / totalWeight;
+
+				setStatus("Building...", steps[index].text);
+				statusPanel.classList.add("active");
+				statusProgress.hidden = false;
+				statusEta.hidden = false;
+				statusProgressBar.style.width = "0%";
+				generateButton.classList.add("loading");
+
+				// Progress bar updates
+				updateProgress();
+				progressTimer = window.setInterval(updateProgress, 500);
+
+				// Step cycling with variable timing
+				const scheduleNext = () => {
+					const delay = baseInterval * steps[index].weight;
+					stepTimer = window.setTimeout(() => {
+						index = (index + 1) % steps.length;
+						setStatus("Building...", steps[index].text);
+						scheduleNext();
+					}, delay);
+				};
+				scheduleNext();
+			}
+
+			function stopStatusCycle(finalMessage) {
+				window.clearTimeout(stepTimer);
+				window.clearInterval(progressTimer);
+				statusProgressBar.style.width = "100%";
+				statusEta.textContent = "Done!";
+				statusEta.classList.add('status-complete');
+				setStatus(finalMessage, "Complete");
+				generateButton.classList.remove("loading");
+				// Hide progress bar and reset after a moment
+				setTimeout(() => {
+					statusProgress.hidden = true;
+					statusEta.hidden = true;
+					statusEta.classList.remove('status-complete');
+				}, 1500);
+			}
+
+			chips.forEach((chip) => {
+				chip.addEventListener("click", () => {
+					promptInput.value = chip.dataset.prompt || "";
+					promptInput.focus();
+					chip.classList.add("selected");
+					setTimeout(() => chip.classList.remove("selected"), 200);
+				});
+			});
+
+			form.addEventListener("submit", async (event) => {
+				event.preventDefault();
+				const prompt = promptInput.value.trim();
+				if (!prompt) {
+					promptInput.focus();
+					promptInput.classList.add("shake");
+					setTimeout(
+						() => promptInput.classList.remove("shake"),
+						500,
+					);
+					return;
+				}
+
+				generateButton.disabled = true;
+				startStatusCycle();
+
+				try {
+					const response = await fetch("/api/build", {
+						method: "POST",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify({ prompt }),
+					});
+
+					const data = await response.json();
+
+					if (!response.ok) {
+						const errorMsg =
+							data.error || data.detail || "Builder unavailable";
+						throw new Error(errorMsg);
+					}
+
+					const previewHtml = data.html || "";
+
+					// Show the preview section
+					document.getElementById('preview').hidden = false;
+					previewPlaceholder.hidden = true;
+					previewFrame.hidden = false;
+
+					if (previewHtml) {
+						previewFrame.srcdoc = previewHtml;
+					}
+
+					if (data.shareUrl) {
+						currentShareUrl =
+							window.location.origin + data.shareUrl;
+						previewLink.href = data.shareUrl;
+						shareBtn.classList.add("active");
+					}
+
+					if (data.siteId) {
+						addSiteToGallery({
+							siteId: data.siteId,
+							prompt: prompt.slice(0, 150),
+							createdAt: Date.now(),
+							screenshotUrl: null
+						});
+					}
+
+					stopStatusCycle("Ready");
+
+					document
+						.getElementById("preview")
+						.scrollIntoView({ behavior: "smooth", block: "start" });
+				} catch (error) {
+					const errorMessage = error.message || "Unknown error";
+					stopStatusCycle(errorMessage);
+					console.error("[Build Error]", errorMessage);
+				} finally {
+					generateButton.disabled = false;
+				}
+			});
+
+			shareBtn.addEventListener("click", async () => {
+				if (!currentShareUrl) return;
+				try {
+					await navigator.clipboard.writeText(currentShareUrl);
+					shareBtn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20,6 9,17 4,12"></polyline></svg> Copied!`;
+					shareBtn.classList.add("copied");
+					setTimeout(() => {
+						shareBtn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg> Copy link`;
+						shareBtn.classList.remove("copied");
+					}, 2000);
+				} catch {
+					const input = document.createElement("input");
+					input.value = currentShareUrl;
+					document.body.appendChild(input);
+					input.select();
+					document.execCommand("copy");
+					document.body.removeChild(input);
+				}
+			});
+
+			// Surprise Me button
+			const surpriseBtn = document.getElementById("surprise-btn");
+			surpriseBtn.addEventListener("click", async () => {
+				surpriseBtn.disabled = true;
+				surpriseBtn.innerHTML = `<svg class="spin" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Thinking...`;
+
+				try {
+					const response = await fetch("/api/surprise", {
+						method: "POST",
+						headers: { "Content-Type": "application/json" },
+					});
+
+					const data = await response.json();
+
+					if (!response.ok) {
+						throw new Error(
+							data.error || "Failed to generate idea",
+						);
+					}
+
+					if (data.idea) {
+						promptInput.value = data.idea;
+						promptInput.focus();
+					}
+				} catch (error) {
+					console.error("[Surprise] Error:", error);
+				} finally {
+					surpriseBtn.disabled = false;
+					surpriseBtn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Surprise me`;
+				}
+			});
+
+			// Gallery
+			const galleryGrid = document.getElementById("gallery-grid");
+
+			function formatTimeAgo(timestamp) {
+				const seconds = Math.floor((Date.now() - timestamp) / 1000);
+				if (seconds < 60) return "just now";
+				const minutes = Math.floor(seconds / 60);
+				if (minutes < 60) return `${minutes}m ago`;
+				const hours = Math.floor(minutes / 60);
+				if (hours < 24) return `${hours}h ago`;
+				return "1d ago";
+			}
+
+			function createGalleryCard(site) {
+				const card = document.createElement("article");
+				card.className = "gallery-card";
+				card.dataset.siteId = site.siteId;
+				const preview = site.screenshotUrl
+					? `<img src="${site.screenshotUrl}" loading="lazy" alt="Preview of ${site.prompt}" />`
+					: `<div class="gallery-card-placeholder">Preview processing...</div>`;
+				card.innerHTML = `
+					<div class="gallery-card-preview">
+						${preview}
+						<div class="gallery-card-overlay">
+							<a href="/site/${site.siteId}" target="_blank" rel="noopener" class="gallery-card-cta">View Site</a>
+						</div>
+					</div>
+					<div class="gallery-card-info">
+						<p class="gallery-card-prompt">${site.prompt}</p>
+						<time class="gallery-card-meta">${formatTimeAgo(site.createdAt)}</time>
+					</div>
+				`;
+				card.addEventListener("click", (e) => {
+					if (e.target.closest(".gallery-card-cta")) return;
+					window.open(`/site/${site.siteId}`, "_blank");
+				});
+				return card;
+			}
+
+			// Poll for screenshot and update card when ready
+			async function pollForScreenshot(siteId, maxAttempts = 20) {
+				let attempts = 0;
+				const poll = async () => {
+					if (attempts >= maxAttempts) {
+						console.log(`[Gallery] Polling stopped after ${maxAttempts} attempts for ${siteId}`);
+						return;
+					}
+					attempts++;
+
+					try {
+						const response = await fetch(`/api/screenshot-status/${siteId}`);
+						if (!response.ok) {
+							console.log(`[Gallery] Screenshot status returned ${response.status}`);
+							setTimeout(poll, 2000);
+							return;
+						}
+
+						const data = await response.json();
+						console.log(`[Gallery] Poll ${attempts} for ${siteId}:`, data);
+
+						if (data.ready && data.screenshotUrl) {
+							// Find the card and update its preview
+							const card = document.querySelector(`[data-site-id="${siteId}"]`);
+							console.log(`[Gallery] Found card for ${siteId}:`, !!card);
+
+							if (card) {
+								const placeholder = card.querySelector('.gallery-card-placeholder');
+								if (placeholder) {
+									const img = document.createElement('img');
+									img.src = data.screenshotUrl;
+									img.loading = 'eager';
+									img.alt = 'Preview';
+									img.onload = () => {
+										console.log(`[Gallery] Screenshot loaded for ${siteId}`);
+										placeholder.replaceWith(img);
+									};
+									img.onerror = () => {
+										console.log(`[Gallery] Screenshot failed to load for ${siteId}`);
+									};
+								} else {
+									// Already has an image, might just need updating
+									const existingImg = card.querySelector('.gallery-card-preview img');
+									if (existingImg) {
+										existingImg.src = data.screenshotUrl;
+									}
+								}
+							}
+							return;
+						}
+
+						// Not ready yet, poll again
+						setTimeout(poll, 2000);
+					} catch (err) {
+						console.log(`[Gallery] Poll error:`, err);
+						setTimeout(poll, 2000);
+					}
+				};
+
+				// Start polling after a short delay (screenshot generation takes time)
+				setTimeout(poll, 4000);
+			}
+
+			// Add new site to gallery immediately and start polling for its screenshot
+			function addSiteToGallery(site) {
+				// Remove empty state if present
+				const emptyState = galleryGrid.querySelector('.gallery-empty');
+				if (emptyState) emptyState.remove();
+
+				// Create and prepend the new card
+				const card = createGalleryCard(site);
+				card.classList.add('gallery-card-new');
+				galleryGrid.prepend(card);
+
+				// Remove animation class after animation completes
+				setTimeout(() => card.classList.remove('gallery-card-new'), 600);
+
+				// Start polling for screenshot
+				pollForScreenshot(site.siteId);
+			}
+
+			async function loadGallery() {
+				try {
+					const response = await fetch("/api/gallery");
+					if (!response.ok) throw new Error("Failed to load gallery");
+					const data = await response.json();
+
+					galleryGrid.innerHTML = "";
+
+					if (!data.sites || data.sites.length === 0) {
+						galleryGrid.innerHTML = `
+							<div class="gallery-empty">
+								<div class="gallery-empty-icon">
+									<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+										<rect x="3" y="3" width="18" height="18" rx="2"/>
+										<path d="M3 9h18"/>
+									</svg>
+								</div>
+								<p>No recent sites yet. Be the first!</p>
+							</div>
+						`;
+						return;
+					}
+
+					data.sites.forEach((site) => {
+						const card = createGalleryCard(site);
+						galleryGrid.appendChild(card);
+
+						// If site doesn't have a screenshot yet, start polling
+						if (!site.screenshotUrl) {
+							pollForScreenshot(site.siteId);
+						}
+					});
+				} catch (error) {
+					console.error('[Gallery] Load error:', error);
+					galleryGrid.innerHTML = `
+						<div class="gallery-empty">
+							<p>Couldn't load gallery</p>
+						</div>
+					`;
+				}
+			}
+
+			loadGallery();
+		</script>
+	</body>
+</html>
