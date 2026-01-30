@@ -2,9 +2,9 @@
 // CONSTANTS
 // ============================================================================
 
-export const SITE_TTL_SECONDS = 24 * 60 * 60; // 24 hours
+export const SITE_TTL_SECONDS = 30 * 24 * 60 * 60; // 30 days (fallback, rolling delete is primary)
 export const GALLERY_INDEX_KEY = 'gallery:index';
-export const MAX_GALLERY_SIZE = 24;
+export const MAX_GALLERY_SIZE = 15; // Keep last 15 generations (rolling delete)
 export const SCREENSHOT_PREFIX = 'screenshots/';
 
 // Model names - update these when switching AI providers/models
@@ -21,7 +21,6 @@ export const RATE_LIMIT_CONFIG = {
 } as const;
 
 // Gallery and screenshot settings
-export const GALLERY_VERIFY_LIMIT = 12;
 export const SCREENSHOT_PROPAGATION_DELAY_MS = 1500;
 
 // Allowed origins for CORS (update with your production domain)

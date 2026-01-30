@@ -2,7 +2,6 @@ import {
   ALLOWED_ORIGINS,
   GENERATED_SITE_CSP,
   GALLERY_INDEX_KEY,
-  GALLERY_VERIFY_LIMIT,
   MAX_GALLERY_SIZE,
   MODELS,
   RATE_LIMIT_CONFIG,
@@ -657,7 +656,7 @@ async function handleSiteView(siteId: string, env: Env): Promise<Response> {
 <body>
   <div class="container">
     <h1>This site has expired</h1>
-    <p>Generated sites are available for 24 hours.</p>
+    <p>Generated sites are removed after newer creations.</p>
     ${storedPrompt ? `
     <div class="prompt-preview">
       <strong>Original prompt:</strong>
@@ -737,16 +736,10 @@ async function handleGallery(request: Request, env: Env): Promise<Response> {
     }
 
     const entries: GalleryEntry[] = JSON.parse(indexJson);
-    const now = Date.now();
-    const cutoff = now - SITE_TTL_SECONDS * 1000;
 
-    // Filter out expired entries (older than 24h)
-    const validEntries = entries.filter(e => e.createdAt > cutoff);
-
-    // Verify sites still exist (in parallel, limit to 12 for perf)
-    const toCheck = validEntries.slice(0, GALLERY_VERIFY_LIMIT);
+    // Verify sites still exist (in parallel)
     const checks = await Promise.all(
-      toCheck.map(async entry => {
+      entries.map(async entry => {
         const exists = (await env.SITES.get(entry.siteId)) !== null;
         return exists ? entry : null;
       })
@@ -768,18 +761,30 @@ async function addToGalleryIndex(env: Env, entry: GalleryEntry): Promise<void> {
     // Add new entry at the beginning
     entries.unshift(entry);
 
-    // Filter out expired entries
-    const now = Date.now();
-    const cutoff = now - SITE_TTL_SECONDS * 1000;
-    entries = entries.filter(e => e.createdAt > cutoff);
+    // Identify entries to remove (beyond MAX_GALLERY_SIZE)
+    const entriesToRemove = entries.slice(MAX_GALLERY_SIZE);
 
     // Keep only the most recent entries
     entries = entries.slice(0, MAX_GALLERY_SIZE);
 
-    // Store with same TTL
+    // Store index (with long TTL as fallback)
     await env.SITES.put(GALLERY_INDEX_KEY, JSON.stringify(entries), {
       expirationTtl: SITE_TTL_SECONDS
     });
+
+    // Clean up old entries (KV sites, prompts, and R2 screenshots)
+    for (const old of entriesToRemove) {
+      try {
+        await Promise.all([
+          env.SITES.delete(old.siteId),
+          env.SITES.delete(`prompt:${old.siteId}`),
+          env.SCREENSHOTS?.delete(`${SCREENSHOT_PREFIX}${old.siteId}.png`),
+        ]);
+        logger.info('Gallery', 'Cleaned up old entry', { siteId: old.siteId });
+      } catch {
+        // Best effort cleanup
+      }
+    }
   } catch {
     // Silently fail - gallery is non-critical
   }
