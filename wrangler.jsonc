@@ -3,6 +3,12 @@
     "main": "src/index.ts",
     "compatibility_date": "2025-01-24",
     "workers_dev": true,
+    "observability": {
+        "logs": {
+            "enabled": true,
+            "invocation_logs": true
+        }
+    },
     "routes": [
         {
             "pattern": "adamcbloom.com",
