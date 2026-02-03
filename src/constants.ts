@@ -23,13 +23,6 @@ export const RATE_LIMIT_CONFIG = {
 // Gallery and screenshot settings
 export const SCREENSHOT_PROPAGATION_DELAY_MS = 1500;
 
-// Allowed origins for CORS (update with your production domain)
-export const ALLOWED_ORIGINS = [
-  'https://adamcbloom.com',
-  'https://www.adamcbloom.com',
-];
-
-
 // ============================================================================
 // SYSTEM PROMPTS
 // ============================================================================

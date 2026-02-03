@@ -1,5 +1,4 @@
 import {
-  ALLOWED_ORIGINS,
   GENERATED_SITE_CSP,
   GALLERY_INDEX_KEY,
   MAX_GALLERY_SIZE,
@@ -32,7 +31,9 @@ interface GalleryEntry {
 function isAllowedOrigin(origin: string): boolean {
   if (!origin) return true;
   const isLocalDev = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
-  return isLocalDev || ALLOWED_ORIGINS.includes(origin);
+  // Match *.adamcbloom.com (with or without subdomain, http or https)
+  const isAllowedDomain = /^https?:\/\/(.*\.)?adamcbloom\.com$/.test(origin);
+  return isLocalDev || isAllowedDomain;
 }
 
 function getCorsHeaders(request: Request): Record<string, string> {
