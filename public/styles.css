@@ -204,6 +204,127 @@ body {
 	backdrop-filter: blur(8px);
 }
 
+/* Countdown Section */
+.countdown-section {
+	padding: 2rem 0;
+	margin-bottom: 1rem;
+}
+
+.countdown-container {
+	background: linear-gradient(135deg, var(--surface), rgba(59, 130, 246, 0.05));
+	border: 1px solid var(--border);
+	border-radius: var(--radius-xl);
+	padding: 2.5rem 2rem;
+	backdrop-filter: blur(12px);
+	box-shadow: var(--shadow-md), 0 0 40px rgba(59, 130, 246, 0.1);
+	text-align: center;
+}
+
+.countdown-header {
+	margin-bottom: 2rem;
+}
+
+.countdown-title {
+	font-size: clamp(1.75rem, 4vw, 2.5rem);
+	font-weight: 700;
+	letter-spacing: -0.02em;
+	background: linear-gradient(135deg, var(--text) 0%, var(--accent-hover) 100%);
+	background-clip: text;
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	margin-bottom: 0.5rem;
+}
+
+.countdown-subtitle {
+	font-size: clamp(0.95rem, 2vw, 1.1rem);
+	color: var(--text-muted);
+	font-weight: 500;
+}
+
+.countdown-display {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: clamp(0.5rem, 2vw, 1.5rem);
+	flex-wrap: wrap;
+}
+
+.countdown-unit {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.5rem;
+	min-width: clamp(60px, 10vw, 100px);
+}
+
+.countdown-value {
+	font-size: clamp(2rem, 6vw, 4rem);
+	font-weight: 700;
+	font-family: "JetBrains Mono", monospace;
+	color: var(--text);
+	line-height: 1;
+	text-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+}
+
+.countdown-label {
+	font-size: clamp(0.7rem, 1.5vw, 0.85rem);
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.1em;
+	color: var(--text-subtle);
+}
+
+.countdown-separator {
+	font-size: clamp(1.5rem, 4vw, 3rem);
+	font-weight: 700;
+	color: var(--accent);
+	line-height: 1;
+	margin-top: -1rem;
+	opacity: 0.6;
+}
+
+.countdown-message {
+	margin-top: 2rem;
+	padding: 1.5rem;
+	background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(34, 197, 94, 0.05));
+	border: 1px solid rgba(34, 197, 94, 0.3);
+	border-radius: var(--radius-lg);
+	animation: celebrate 2s ease-in-out infinite;
+}
+
+.countdown-emoji {
+	font-size: 2rem;
+	margin-right: 0.5rem;
+	display: inline-block;
+	animation: bounce 1s ease-in-out infinite;
+}
+
+.countdown-text {
+	font-size: 1.5rem;
+	font-weight: 700;
+	color: #22c55e;
+}
+
+@keyframes celebrate {
+	0%, 100% { transform: scale(1); }
+	50% { transform: scale(1.02); }
+}
+
+@keyframes bounce {
+	0%, 100% { transform: translateY(0); }
+	50% { transform: translateY(-10px); }
+}
+
+@media (max-width: 600px) {
+	.countdown-separator {
+		display: none;
+	}
+	
+	.countdown-display {
+		gap: 1rem;
+	}
+}
+
 /* Hero Section */
 .hero {
 	display: grid;
