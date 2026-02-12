@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Coming Home - Countdown</title>
+		<meta name="description" content="Countdown to coming home" />
+		<meta name="theme-color" content="#09090b" />
+		<!-- Favicons -->
+		<link rel="icon" type="image/x-icon" href="/favicon.ico" />
+		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+		<link rel="manifest" href="/site.webmanifest" />
+		<!-- Preconnect to external resources -->
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<!-- Defer font loading -->
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" media="print" onload="this.media='all'" />
+		<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" /></noscript>
+		<link rel="stylesheet" href="styles.css" />
+	</head>
+	<body>
+		<!-- Ambient background -->
+		<div class="ambient" aria-hidden="true">
+			<div class="orb orb-1"></div>
+			<div class="orb orb-2"></div>
+			<div class="orb orb-3"></div>
+			<div class="grid-overlay"></div>
+		</div>
+
+		<main class="countdown-page">
+			<nav class="nav">
+				<a href="/" class="logo-link">
+					<div class="logo">
+						<span class="logo-mark"></span>
+						<span class="logo-text">Adam Bloom</span>
+					</div>
+				</a>
+				<a href="/" class="back-link">
+					<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+						<path d="M19 12H5M12 19l-7-7 7-7"/>
+					</svg>
+					<span>Back</span>
+				</a>
+			</nav>
+
+			<div class="countdown-wrapper">
+				<div class="countdown-container">
+					<div class="countdown-header">
+						<h1 class="countdown-title">Coming Home</h1>
+						<p class="countdown-subtitle">Back home to see my wife</p>
+					</div>
+					<div class="countdown-display" id="countdown-display">
+						<div class="countdown-unit">
+							<span class="countdown-value" id="days">0</span>
+							<span class="countdown-label">Days</span>
+						</div>
+						<div class="countdown-separator">:</div>
+						<div class="countdown-unit">
+							<span class="countdown-value" id="hours">0</span>
+							<span class="countdown-label">Hours</span>
+						</div>
+						<div class="countdown-separator">:</div>
+						<div class="countdown-unit">
+							<span class="countdown-value" id="minutes">0</span>
+							<span class="countdown-label">Minutes</span>
+						</div>
+						<div class="countdown-separator">:</div>
+						<div class="countdown-unit">
+							<span class="countdown-value" id="seconds">0</span>
+							<span class="countdown-label">Seconds</span>
+						</div>
+					</div>
+					<div class="countdown-message" id="countdown-message" hidden>
+						<span class="countdown-emoji">🎉</span>
+						<span class="countdown-text">I'm home!</span>
+					</div>
+				</div>
+			</div>
+		</main>
+
+		<script type="module">
+			// Lightweight interactive background with mouse parallax
+			const orbs = document.querySelectorAll(".orb");
+			let mouseX = 0, mouseY = 0;
+			let currentX = 0, currentY = 0;
+
+			document.addEventListener("mousemove", (e) => {
+				mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+				mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+			});
+
+			function animateOrbs() {
+				currentX += (mouseX - currentX) * 0.03;
+				currentY += (mouseY - currentY) * 0.03;
+
+				orbs.forEach((orb, i) => {
+					const depth = (i + 1) * 15;
+					const x = currentX * depth;
+					const y = currentY * depth;
+					orb.style.transform = `translate(${x}px, ${y}px)`;
+				});
+
+				requestAnimationFrame(animateOrbs);
+			}
+
+			// Only animate on non-touch devices
+			if (!("ontouchstart" in window)) {
+				animateOrbs();
+			}
+
+			// Countdown Clock Logic
+			const countdownDisplay = document.getElementById("countdown-display");
+			const countdownMessage = document.getElementById("countdown-message");
+			const daysEl = document.getElementById("days");
+			const hoursEl = document.getElementById("hours");
+			const minutesEl = document.getElementById("minutes");
+			const secondsEl = document.getElementById("seconds");
+
+			// Target date: Feb 13, 2026 at 5:20 PM EST (which is UTC-5)
+			// Converting to UTC: 5:20 PM EST = 10:20 PM UTC
+			const targetDate = new Date("2026-02-13T22:20:00Z");
+
+			function updateCountdown() {
+				const now = new Date();
+				const diff = targetDate - now;
+
+				if (diff <= 0) {
+					// Countdown has ended
+					countdownDisplay.hidden = true;
+					countdownMessage.hidden = false;
+					return;
+				}
+
+				// Calculate time components
+				const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+				const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+				const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+				const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+				// Update display with zero padding
+				daysEl.textContent = String(days).padStart(2, '0');
+				hoursEl.textContent = String(hours).padStart(2, '0');
+				minutesEl.textContent = String(minutes).padStart(2, '0');
+				secondsEl.textContent = String(seconds).padStart(2, '0');
+			}
+
+			// Update immediately and then every second
+			updateCountdown();
+			setInterval(updateCountdown, 1000);
+		</script>
+	</body>
+</html>
