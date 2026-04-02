@@ -356,7 +356,7 @@ async function handleBuild(request: Request, env: Env, ctx: ExecutionContext): P
     // Add to gallery index
     await addToGalleryIndex(env, {
       siteId,
-      prompt: prompt.slice(0, 150), // Truncate for display
+      prompt,
       createdAt: Date.now()
     });
   } catch {
@@ -486,7 +486,7 @@ async function handleBuildStream(request: Request, env: Env, ctx: ExecutionConte
 
       await addToGalleryIndex(env, {
         siteId,
-        prompt: prompt.slice(0, 150),
+        prompt,
         createdAt: Date.now()
       });
 

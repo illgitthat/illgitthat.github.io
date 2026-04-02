@@ -596,12 +596,16 @@
 				return "1d ago";
 			}
 
+			function escapeHtmlAttr(str) {
+				return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+			}
+
 			function createGalleryCard(site) {
 				const card = document.createElement("article");
 				card.className = "gallery-card";
 				card.dataset.siteId = site.siteId;
 				const preview = site.screenshotUrl
-					? `<img src="${site.screenshotUrl}" loading="lazy" alt="Preview of ${site.prompt}" />`
+					? `<img src="${site.screenshotUrl}" loading="lazy" alt="Preview of ${escapeHtmlAttr(site.prompt.slice(0, 100))}" />`
 					: `<div class="gallery-card-placeholder">Preview processing...</div>`;
 				card.innerHTML = `
 					<div class="gallery-card-preview">
@@ -611,7 +615,7 @@
 						</div>
 					</div>
 					<div class="gallery-card-info">
-						<p class="gallery-card-prompt">${site.prompt}</p>
+						<p class="gallery-card-prompt" title="${escapeHtmlAttr(site.prompt)}">${site.prompt}</p>
 						<time class="gallery-card-meta">${formatTimeAgo(site.createdAt)}</time>
 					</div>
 				`;
