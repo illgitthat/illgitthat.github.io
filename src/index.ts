@@ -333,7 +333,7 @@ async function handleBuild(request: Request, env: Env, ctx: ExecutionContext): P
       userMessage = 'The AI service is temporarily unavailable. Please try again shortly.';
     }
 
-    return jsonResponseWithCors(request, { error: userMessage, detail: errorMessage }, 502, rateLimitHeaders);
+    return jsonResponseWithCors(request, { error: userMessage }, 502, rateLimitHeaders);
   }
 
   html = html.trim();
@@ -523,7 +523,7 @@ async function handleBuildStream(request: Request, env: Env, ctx: ExecutionConte
         userMessage = 'The AI service is temporarily unavailable. Please try again shortly.';
       }
 
-      await sendEvent('error', { error: userMessage, detail: errorMessage });
+      await sendEvent('error', { error: userMessage });
     } finally {
       await writer.close();
     }
@@ -725,7 +725,7 @@ async function handleScreenshotStatus(request: Request, siteId: string, env: Env
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown';
     logger.error('ScreenshotStatus', 'Error checking status', { siteId, error: message });
-    return jsonResponseWithCors(request, { ready: false, error: message });
+    return jsonResponseWithCors(request, { ready: false, error: 'Screenshot status unavailable' });
   }
 }
 

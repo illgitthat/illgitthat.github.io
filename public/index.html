@@ -240,6 +240,7 @@
 						class="preview-frame"
 						id="preview-frame"
 						title="Generated site preview"
+						sandbox="allow-forms allow-popups allow-scripts"
 						hidden
 					></iframe>
 				</div>
@@ -615,7 +616,7 @@
 						</div>
 					</div>
 					<div class="gallery-card-info">
-						<p class="gallery-card-prompt" title="${escapeHtmlAttr(site.prompt)}">${site.prompt}</p>
+						<p class="gallery-card-prompt" title="${escapeHtmlAttr(site.prompt)}">${escapeHtmlAttr(site.prompt)}</p>
 						<time class="gallery-card-meta">${formatTimeAgo(site.createdAt)}</time>
 					</div>
 				`;

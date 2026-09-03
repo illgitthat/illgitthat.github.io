@@ -39,12 +39,11 @@
             "binding": "SITES",
             "id": "fcbfa05ea0a44cf7b395ed6a94600641",
             "preview_id": "fcbfa05ea0a44cf7b395ed6a94600641"
+        },
+        {
+            "binding": "RATE_LIMIT",
+            "id": "fcbfa05ea0a44cf7b395ed6a94600641",
+            "preview_id": "fcbfa05ea0a44cf7b395ed6a94600641"
         }
-        // Uncomment to enable rate limiting:
-        // {
-        //     "binding": "RATE_LIMIT",
-        //     "id": "<your-kv-namespace-id>",
-        //     "preview_id": "<your-preview-kv-namespace-id>"
-        // }
     ]
 }
