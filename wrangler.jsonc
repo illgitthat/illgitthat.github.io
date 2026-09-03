@@ -1,7 +1,7 @@
 {
     "name": "gentest",
     "main": "src/index.ts",
-    "compatibility_date": "2025-01-24",
+    "compatibility_date": "2026-09-03",
     "workers_dev": true,
     "observability": {
         "logs": {

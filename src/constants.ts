@@ -9,7 +9,7 @@ export const SCREENSHOT_PREFIX = 'screenshots/';
 
 // Model names - update these when switching AI providers/models
 export const MODELS = {
-  BUILD: 'zai-glm-4.7',      // Used for HTML generation
+  BUILD: 'gpt-oss-120b',     // Used for HTML generation
   SURPRISE: 'gpt-oss-120b',  // Used for creative idea generation
 } as const;
 
